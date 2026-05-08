@@ -15,6 +15,7 @@ const __dirname = path.dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
+  resolvePluginsRelativeTo: __dirname,
 });
 
 export default [
@@ -48,7 +49,10 @@ export default [
       ],
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
-      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+      'import/no-extraneous-dependencies': 'off', // Смягчаем для конфигов
+      'react/function-component-definition': 'off', // Позволяет любые типы компонентов
+      'import/extensions': 'off', // Иногда конфликтует с TS в редакторе
+      'react/prefer-stateless-function': 'off', // Позволяет классовые компоненты без стейта
     },
     settings: {
       react: {

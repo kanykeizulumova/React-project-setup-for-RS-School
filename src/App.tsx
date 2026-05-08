@@ -1,130 +1,75 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from './assets/vite.svg';
-import heroImg from './assets/hero.png';
+import React from 'react';
 import './App.css';
+import characters from './data/characters.ts';
+import Card from './Card.tsx';
+import SearchBar from './Searchbar.tsx';
 
-function App() {
-  const [count, setCount] = useState(0);
+interface AppState {
+  searchQuery: string;
+  appliedQuery: string;
+}
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+class App extends React.Component<{}, AppState> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      searchQuery: localStorage.getItem('searchQuery') || '',
+      appliedQuery: localStorage.getItem('appliedQuery') || '',
+    };
+  }
+
+  handleInputChange = (value: string) => {
+    this.setState({ searchQuery: value });
+  };
+
+  handleSearchSubmit = () => {
+    const { searchQuery } = this.state;
+    this.setState({ appliedQuery: searchQuery });
+  };
+
+  handleReset = () => {
+    this.setState({
+      searchQuery: '',
+      appliedQuery: '',
+    });
+  };
+
+  render() {
+    const { searchQuery, appliedQuery } = this.state;
+
+    const filteredCharacters = characters.filter((char) =>
+      char.name.toLowerCase().includes(appliedQuery.toLowerCase())
+    );
+
+    return (
+      <div>
+        <div className="search-area">
+          <SearchBar
+            value={searchQuery}
+            onChange={this.handleInputChange}
+            onSearchClick={this.handleSearchSubmit}
+            onHandleClick={this.handleReset}
+          />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+        <div className="result-area">
+          {filteredCharacters.length === 0 ? (
+            <p>No results found for &apos;{searchQuery}&apos;</p>
+          ) : (
+            filteredCharacters.map((char) => (
+              <Card
+                key={char.id}
+                name={char.name}
+                species={char.species}
+                age={char.age}
+                abilities={char.abilities}
+                imageUrl={char.imageUrl}
+              />
+            ))
+          )}
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((prevCount) => prevCount + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks" />
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon" />
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank" rel="noreferrer">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon" />
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a
-                href="https://github.com/vitejs/vite"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon" />
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon" />
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon" />
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://bsky.app/profile/vite.dev"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon" />
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks" />
-      <section id="spacer" />
-    </>
-  );
+      </div>
+    );
+  }
 }
 
 export default App;
