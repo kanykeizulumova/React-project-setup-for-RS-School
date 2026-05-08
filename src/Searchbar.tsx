@@ -5,12 +5,12 @@ interface SearchBarProps {
   value: string;
   onChange: (val: string) => void;
   onSearchClick: () => void;
-  onHandleClick: () => void;
+  onReset: () => void;
 }
 
 class SearchBar extends React.Component<SearchBarProps> {
   render() {
-    const { value, onChange, onSearchClick, onHandleClick } = this.props;
+    const { value, onChange, onSearchClick, onReset } = this.props;
     return (
       <div className="search-bar">
         <input
@@ -33,7 +33,7 @@ class SearchBar extends React.Component<SearchBarProps> {
             type="button"
             onClick={() => {
               onChange('');
-              onHandleClick();
+              onReset();
             }}
           >
             Reset

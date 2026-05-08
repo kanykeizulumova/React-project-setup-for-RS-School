@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import characters from './data/characters.ts';
-import Card from './Card.tsx';
+import CardList from './Cardlist.tsx';
 import SearchBar from './Searchbar.tsx';
 
 interface AppState {
@@ -36,18 +36,33 @@ class App extends React.Component<{}, AppState> {
     const { searchQuery, appliedQuery } = this.state;
     const trimmedQuery = searchQuery.trim();
 
-    this.setState({ isLoading: true });
+    if (trimmedQuery === appliedQuery && appliedQuery !== '') return;
+
+    this.setState({ isLoading: true, error: null });
+
     setTimeout(() => {
-      if (trimmedQuery !== appliedQuery) {
+      try {
+        if (Math.random() > 0.8) {
+          throw new Error(
+            'The server is temporarily unavailable. Please try again later.'
+          );
+        }
+
         this.setState({
           appliedQuery: trimmedQuery,
           isLoading: false,
         });
+
         localStorage.setItem('searchQuery', trimmedQuery);
-      } else {
-        this.setState({ isLoading: false });
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+        this.setState({
+          error: errorMessage,
+          isLoading: false,
+        });
+        console.error('Search Error:', errorMessage);
       }
-    }, 1500);
+    }, 1000);
   };
 
   handleReset = () => {
@@ -58,76 +73,43 @@ class App extends React.Component<{}, AppState> {
   };
 
   render() {
-    const { searchQuery, appliedQuery, error, isLoading, shouldThrow } =
+    const { searchQuery, appliedQuery, isLoading, error, shouldThrow } =
       this.state;
+
+    if (shouldThrow) throw new Error('Critical failure!');
 
     const filteredCharacters = characters.filter((char) =>
       char.name.toLowerCase().includes(appliedQuery.toLowerCase())
     );
 
-    if (shouldThrow) {
-      throw new Error('Test Crash!');
-    }
-
-    let resultsContent;
-
+    let mainContent;
     if (error) {
-      resultsContent = (
-        <div className="error-message">
-          <h2>Oops, something went wrong! 😭</h2>
-          <p>{error}</p>
-        </div>
-      );
+      mainContent = <div className="error-msg">{error}</div>;
     } else if (isLoading) {
-      resultsContent = <div className="spinner">Загрузка...</div>;
+      mainContent = <div className="loader">Загрузка...</div>;
     } else {
-      resultsContent = (
-        <div>
-          <div className="results-list">
-            {filteredCharacters.length === 0 ? (
-              <p>
-                No results found for &apos;
-                {searchQuery}
-                &apos;
-              </p>
-            ) : (
-              filteredCharacters.map((char) => (
-                <Card
-                  key={char.id}
-                  name={char.name}
-                  species={char.species}
-                  age={char.age}
-                  abilities={char.abilities}
-                  imageUrl={char.imageUrl}
-                />
-              ))
-            )}
-          </div>
-          <div className="error-btn">
-            <button
-              type="button"
-              onClick={() => this.setState({ shouldThrow: true })}
-              style={{ marginTop: '20px' }}
-            >
-              Simulate Crash 💣
-            </button>
-          </div>
-        </div>
-      );
+      mainContent = <CardList items={filteredCharacters} />;
     }
 
     return (
-      <div>
-        <div className="search-area">
+      <div className="app-container">
+        <header className="search-area">
           <SearchBar
             value={searchQuery}
             onChange={this.handleInputChange}
             onSearchClick={this.handleSearchSubmit}
-            onHandleClick={this.handleReset}
+            onReset={this.handleReset}
           />
-        </div>
+        </header>
 
-        <div className="result-area">{resultsContent}</div>
+        <main className="result-area">{mainContent}</main>
+
+        <button
+          type="button"
+          onClick={() => this.setState({ shouldThrow: true })}
+        >
+          Simulate Crash 💣
+        </button>
       </div>
     );
   }

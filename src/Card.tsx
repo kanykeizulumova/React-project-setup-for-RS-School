@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
 
-interface CardProps {
+export interface CardProps {
+  id: string;
   name: string;
   species: string;
   age: number;
@@ -9,7 +10,7 @@ interface CardProps {
   imageUrl: string;
 }
 
-class Card extends React.Component<CardProps> {
+export class Card extends React.Component<CardProps> {
   render() {
     const { imageUrl, name, species, age, abilities } = this.props;
     return (
