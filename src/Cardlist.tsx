@@ -22,8 +22,9 @@ class CardList extends React.Component<CardListProps> {
             id={char.id}
             name={char.name}
             species={char.species}
-            age={char.age}
-            abilities={char.abilities}
+            status={char.status}
+            gender={char.gender}
+            location={char.location}
             imageUrl={char.imageUrl}
           />
         ))}
