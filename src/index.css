@@ -64,6 +64,9 @@
 
 body {
   margin: 0;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--accent-bg) 100%);
+  background-attachment: fixed;
+  position: relative;
 }
 
 h1,
