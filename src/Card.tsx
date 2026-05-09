@@ -13,17 +13,13 @@ export interface CardProps {
 
 export class Card extends React.Component<CardProps> {
   render() {
-    const { imageUrl, name, species, status, gender, location } = this.props;
+    const { imageUrl, name, status, gender, location } = this.props;
     return (
       <div className="card">
         <img src={imageUrl} alt={name} />
         <h3>{name}</h3>
-        <p>
-          <b>Status:</b> {status} — {species}
-        </p>
-        <p>
-          <b>Gender:</b> {gender}
-        </p>
+        <p className={status.toLowerCase()}> Status: {status}</p>
+        <p className={gender.toLowerCase()}> Gender: {gender}</p>
         <p>
           <b>Last location:</b> {location}
         </p>

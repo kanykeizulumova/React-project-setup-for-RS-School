@@ -19,6 +19,8 @@ interface AppState {
   isLoading: boolean;
   error: string | null;
   shouldThrow: boolean;
+  currentPage?: number;
+  totalPages: number;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -30,6 +32,8 @@ class App extends React.Component<{}, AppState> {
       isLoading: false,
       error: null,
       shouldThrow: false,
+      currentPage: 1,
+      totalPages: 0,
     };
   }
 
@@ -38,7 +42,25 @@ class App extends React.Component<{}, AppState> {
     this.fetchData(searchQuery);
   }
 
-  fetchData = async (name: string) => {
+  goToNextPage = () => {
+    const { currentPage, totalPages, searchQuery } = this.state;
+    if (currentPage && currentPage < totalPages) {
+      const next = currentPage + 1;
+      this.setState({ currentPage: next });
+      this.fetchData(searchQuery, next);
+    }
+  };
+
+  goToPrevPage = () => {
+    const { currentPage, searchQuery } = this.state;
+    if (currentPage && currentPage > 1) {
+      const next = currentPage - 1;
+      this.setState({ currentPage: next });
+      this.fetchData(searchQuery, next);
+    }
+  };
+
+  fetchData = async (name: string, page = 1) => {
     this.setState({ isLoading: true, error: null });
     const trimmedName = name.trim();
 
@@ -46,7 +68,7 @@ class App extends React.Component<{}, AppState> {
       localStorage.setItem('searchQuery', trimmedName);
 
       const response = await fetch(
-        `https://rickandmortyapi.com/api/character/?name=${trimmedName}`
+        `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${page}`
       );
 
       if (!response.ok) {
@@ -54,13 +76,15 @@ class App extends React.Component<{}, AppState> {
           this.setState({ characters: [], isLoading: false });
           return;
         }
-        throw new Error(`Ошибка сервера: ${response.status}`);
+        throw new Error(`Server error: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log(data);
       this.setState({
         characters: data.results,
         isLoading: false,
+        totalPages: data.info.pages,
       });
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : 'Unknown error';
@@ -79,16 +103,26 @@ class App extends React.Component<{}, AppState> {
 
   handleSearchSubmit = () => {
     const { searchQuery } = this.state;
-    this.fetchData(searchQuery);
+    this.setState({ currentPage: 1 });
+    this.fetchData(searchQuery, 1);
   };
 
   handleReset = () => {
-    this.setState({ searchQuery: '' }, () => this.fetchData(''));
+    this.setState({ searchQuery: '', currentPage: 1 }, () =>
+      this.fetchData('', 1)
+    );
   };
 
   render() {
-    const { searchQuery, characters, isLoading, error, shouldThrow } =
-      this.state;
+    const {
+      searchQuery,
+      characters,
+      isLoading,
+      error,
+      shouldThrow,
+      currentPage,
+      totalPages,
+    } = this.state;
 
     if (shouldThrow) throw new Error('Critical failure!');
 
@@ -96,9 +130,9 @@ class App extends React.Component<{}, AppState> {
     if (error) {
       mainContent = <div className="error-msg">{error}</div>;
     } else if (isLoading) {
-      mainContent = <div className="loader">Загрузка...</div>;
+      mainContent = <div className="loader">Loading...</div>;
     } else if (characters.length === 0) {
-      mainContent = <p>Ничего не найдено</p>;
+      mainContent = <p>Nothing found</p>;
     } else {
       const mappedItems = characters.map((c) => ({
         id: String(c.id),
@@ -109,7 +143,15 @@ class App extends React.Component<{}, AppState> {
         location: c.location.name,
         imageUrl: c.image,
       }));
-      mainContent = <CardList items={mappedItems} />;
+      mainContent = (
+        <CardList
+          items={mappedItems}
+          onNext={this.goToNextPage}
+          onPrev={this.goToPrevPage}
+          currentPage={currentPage}
+          totalPages={totalPages}
+        />
+      );
     }
 
     return (
@@ -130,7 +172,7 @@ class App extends React.Component<{}, AppState> {
           className="crash-button"
           onClick={() => this.setState({ shouldThrow: true })}
         >
-          Simulate Crash 💣
+          Simulate Crash
         </button>
       </div>
     );
