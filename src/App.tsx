@@ -19,7 +19,7 @@ interface AppState {
   isLoading: boolean;
   error: string | null;
   shouldThrow: boolean;
-  currentPage?: number;
+  currentPage: number;
   totalPages: number;
 }
 
@@ -80,6 +80,7 @@ class App extends React.Component<{}, AppState> {
       }
 
       const data = await response.json();
+      // eslint-disable-next-line no-console
       console.log(data);
       this.setState({
         characters: data.results,
