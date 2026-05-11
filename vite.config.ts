@@ -11,6 +11,15 @@ export default defineConfig({
     setupFiles: './src/setupTests.ts',
     coverage: {
       provider: 'v8',
+      include: ['src/**/*.{js,jsx,ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{js,jsx,ts,tsx}',
+        'src/**/*.spec.{js,jsx,ts,tsx}',
+        'src/index.{js,jsx,ts,tsx}',
+        'src/setupTests.{js,ts}',
+        'src/**/*.d.ts',
+        'src/**/*.css',
+      ],
       thresholds: {
         global: {
           statements: 80,

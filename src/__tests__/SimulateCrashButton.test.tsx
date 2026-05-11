@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import App from './App';
-import ErrorBoundary from './ErrorBoundary';
+import App from '../App';
+import ErrorBoundary from '../ErrorBoundary';
 
 test('Test the simulate crash button and check refresh button', async () => {
   globalThis.fetch = vi.fn().mockResolvedValue({
