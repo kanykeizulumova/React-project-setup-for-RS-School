@@ -13,11 +13,13 @@ export interface CardProps {
 
 export class Card extends React.Component<CardProps> {
   render() {
-    const { imageUrl, name, status, gender, location } = this.props;
+    const { id, imageUrl, name, status, gender, location, species } =
+      this.props;
     return (
-      <div className="card">
+      <div className="card" data-id={id}>
         <img src={imageUrl} alt={name} />
         <h3>{name}</h3>
+        <p className="species">Species: {species}</p>
         <p className={status.toLowerCase()}> Status: {status}</p>
         <p className={gender.toLowerCase()}> Gender: {gender}</p>
         <p>
