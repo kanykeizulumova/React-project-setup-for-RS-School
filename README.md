@@ -1,1 +1,1 @@
-React project setup. Class components. Error boundary
+This is Class components project for RS School
