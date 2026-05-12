@@ -20,7 +20,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['dist', 'node_modules', 'eslint.config.js'],
+    ignores: ['dist', 'node_modules', 'eslint.config.js', 'coverage'],
   },
   ...compat.extends('airbnb', 'airbnb-typescript'),
   {

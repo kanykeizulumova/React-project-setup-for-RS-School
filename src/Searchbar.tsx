@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 
 interface SearchBarProps {
@@ -8,40 +7,40 @@ interface SearchBarProps {
   onReset: () => void;
 }
 
-class SearchBar extends React.Component<SearchBarProps> {
-  render() {
-    const { value, onChange, onSearchClick, onReset } = this.props;
-    return (
-      <div className="search-bar">
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onSearchClick();
-            }
-          }}
-          placeholder="Type name..."
-        />
-        <button type="button" onClick={onSearchClick}>
-          Search
-        </button>
+const SearchBar = ({
+  value,
+  onChange,
+  onSearchClick,
+  onReset,
+}: SearchBarProps) => (
+  <div className="search-bar">
+    <input
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onSearchClick();
+        }
+      }}
+      placeholder="Type name..."
+    />
+    <button type="button" onClick={onSearchClick}>
+      Search
+    </button>
 
-        {value !== '' && (
-          <button
-            type="button"
-            onClick={() => {
-              onChange('');
-              onReset();
-            }}
-          >
-            Reset
-          </button>
-        )}
-      </div>
-    );
-  }
-}
+    {value !== '' && (
+      <button
+        type="button"
+        onClick={() => {
+          onChange('');
+          onReset();
+        }}
+      >
+        Reset
+      </button>
+    )}
+  </div>
+);
 
 export default SearchBar;
