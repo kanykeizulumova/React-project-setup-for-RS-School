@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import CardList from './Cardlist.tsx';
 import SearchBar from './Searchbar.tsx';
+import useLocalStorage from './LocalStorageHook.tsx';
 
 interface Character {
   id: number;
@@ -14,9 +15,7 @@ interface Character {
 }
 
 const App = () => {
-  const [searchQuery, setSearchQuery] = useState(
-    localStorage.getItem('searchQuery') || ''
-  );
+  const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
   const [characters, setCharacters] = useState<Character[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
