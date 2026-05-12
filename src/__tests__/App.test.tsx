@@ -144,3 +144,31 @@ test('reset button clears input and localStorage', async () => {
 
   expect(localStorage.getItem('searchQuery')).toBe('');
 });
+
+test('reads search term from localStorage on mount', async () => {
+  localStorage.setItem('searchQuery', 'Rick');
+
+  render(<App />);
+
+  const input = screen.getByPlaceholderText(/Type name.../i);
+  expect(input).toHaveValue('Rick');
+});
+
+test('writes search term to localStorage on search', async () => {
+  localStorage.clear();
+  const user = userEvent.setup();
+
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ results: [], info: { pages: 0 } }),
+  });
+
+  render(<App />);
+
+  const input = screen.getByPlaceholderText(/Type name.../i);
+  await user.type(input, 'Morty');
+  const searchButton = screen.getByRole('button', { name: /search/i });
+  await user.click(searchButton);
+
+  expect(localStorage.getItem('searchQuery')).toBe('Morty');
+});
