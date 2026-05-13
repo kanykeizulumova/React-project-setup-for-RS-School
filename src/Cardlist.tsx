@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import Card from './Card.tsx';
 import type { CardProps } from './Card.tsx';
 
@@ -23,16 +24,17 @@ const CardList = ({
     <div>
       <div className="card-list">
         {items.map((char) => (
-          <Card
-            key={char.id}
-            id={char.id}
-            name={char.name}
-            species={char.species}
-            status={char.status}
-            gender={char.gender}
-            location={char.location}
-            imageUrl={char.imageUrl}
-          />
+          <Link to={`/character/${char.id}`} key={char.id}>
+            <Card
+              id={char.id}
+              name={char.name}
+              species={char.species}
+              status={char.status}
+              gender={char.gender}
+              location={char.location}
+              imageUrl={char.imageUrl}
+            />
+          </Link>
         ))}
       </div>
       <div className="pagination-controls">
