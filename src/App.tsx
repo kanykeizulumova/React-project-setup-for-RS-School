@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import './App.css';
+import { Link } from 'react-router';
 import CardList from './Cardlist.tsx';
 import SearchBar from './Searchbar.tsx';
 import useLocalStorage from './LocalStorageHook.tsx';
@@ -144,6 +145,11 @@ const App = () => {
       >
         Simulate Crash
       </button>
+      <footer>
+        <button type="button" className="about-us">
+          <Link to="/about">About Us</Link>
+        </button>
+      </footer>
     </div>
   );
 };
