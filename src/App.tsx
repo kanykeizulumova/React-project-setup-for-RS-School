@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams, Link } from 'react-router';
 import './App.css';
-import { Link } from 'react-router';
+
 import CardList from './Cardlist.tsx';
 import SearchBar from './Searchbar.tsx';
 import useLocalStorage from './LocalStorageHook.tsx';
@@ -21,10 +22,12 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldThrow, setShouldThrow] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') || '';
+  const page = searchParams.get('page') || '1';
 
-  const fetchData = useCallback(async (name: string, page = 1) => {
+  const fetchData = useCallback(async (name: string, pageNumber = 1) => {
     setIsLoading(true);
     setError(null);
 
@@ -34,7 +37,7 @@ const App = () => {
       localStorage.setItem('searchQuery', trimmedName);
 
       const response = await fetch(
-        `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${page}`
+        `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${pageNumber}`
       );
 
       if (!response.ok) {
@@ -60,24 +63,27 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    if (!query && searchQuery !== '') {
+      setSearchParams({ query: searchQuery, page });
+    }
+  }, [query, page, searchQuery, setSearchParams]);
+
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchData(searchQuery);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchData(query, Number(page));
+  }, [query, page, fetchData]);
 
   const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      const next = currentPage + 1;
-      setCurrentPage(next);
-      fetchData(searchQuery, next);
+    if (Number(page) < totalPages) {
+      const next = Number(page) + 1;
+      setSearchParams({ query, page: String(next) });
     }
   };
 
   const goToPrevPage = () => {
-    if (currentPage && currentPage > 1) {
-      const next = currentPage - 1;
-      setCurrentPage(next);
-      fetchData(searchQuery, next);
+    if (Number(page) > 1) {
+      const next = Number(page) - 1;
+      setSearchParams({ query, page: String(next) });
     }
   };
 
@@ -86,14 +92,12 @@ const App = () => {
   };
 
   const handleSearchSubmit = () => {
-    setCurrentPage(1);
-    fetchData(searchQuery, 1);
+    setSearchParams({ query: searchQuery, page: '1' });
   };
 
   const handleReset = () => {
     setSearchQuery('');
-    setCurrentPage(1);
-    fetchData('', 1);
+    setSearchParams({ query: '', page: '1' });
   };
 
   if (shouldThrow) throw new Error('Critical failure!');
@@ -119,7 +123,7 @@ const App = () => {
         items={mappedItems}
         onNext={goToNextPage}
         onPrev={goToPrevPage}
-        currentPage={currentPage}
+        currentPage={Number(page)}
         totalPages={totalPages}
       />
     );
