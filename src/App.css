@@ -136,3 +136,38 @@ input:focus {
   transform: scale(1.1) rotate(10deg);
   background: #ff1a1a;
 }
+
+.about-us {
+  color: black;
+  padding: 8px 16px;
+  max-width: 150px;
+  cursor: pointer;
+  align-self: center;
+  font-size: 25px;
+
+  a {
+    all: unset;
+  }
+}
+
+.about-page {
+  padding: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#backtobtn {
+  position: fixed;
+  top: 30px;
+  left: 50px;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  background-color: transparent;
+  font-size: xx-large;
+
+  a {
+    all: unset;
+  }
+}
