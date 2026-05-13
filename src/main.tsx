@@ -6,6 +6,7 @@ import App from './App';
 import ErrorBoundary from './ErrorBoundary';
 import About from './routes/aboutpage';
 import Layout from './Layout';
+import CharacterDetails from './routes/CharacterDetails';
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,16 @@ const router = createBrowserRouter([
       </ErrorBoundary>
     ),
     children: [
-      { index: true, element: <App /> },
+      {
+        path: '/',
+        element: <App />,
+        children: [
+          {
+            path: 'character/:id',
+            element: <CharacterDetails />,
+          },
+        ],
+      },
       {
         path: 'about',
         element: <About />,
