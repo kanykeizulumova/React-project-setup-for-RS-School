@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, Link } from 'react-router';
+import { useSearchParams, Link, Outlet, useParams } from 'react-router';
 import './App.css';
-
 import CardList from './Cardlist.tsx';
 import SearchBar from './Searchbar.tsx';
 import useLocalStorage from './LocalStorageHook.tsx';
@@ -26,6 +25,9 @@ const App = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
+  const { id } = useParams();
+  const detailsId = searchParams.get('character');
+  const needId = `${detailsId} + / +${id}`;
 
   const fetchData = useCallback(async (name: string, pageNumber = 1) => {
     setIsLoading(true);
@@ -140,7 +142,14 @@ const App = () => {
         />
       </header>
 
-      <main className="result-area">{mainContent}</main>
+      <main className="result-area">
+        <div className={needId ? 'column-left' : 'card-lists'}>
+          {mainContent}
+        </div>
+        <div className="details-side">
+          <Outlet />
+        </div>
+      </main>
 
       <button
         type="button"
