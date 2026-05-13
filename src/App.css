@@ -10,9 +10,30 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
   padding: 40px 20px;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
-.card {
+.card-lists {
+  width: 100%;
+}
+
+.column-left {
+  width: 50%;
+}
+
+.details-side {
+  width: 50%;
+  position: fixed;
+  top: 100px;
+  right: 100px;
+}
+
+.card,
+.details {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 16px;
