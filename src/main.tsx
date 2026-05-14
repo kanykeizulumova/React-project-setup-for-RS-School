@@ -7,6 +7,7 @@ import ErrorBoundary from './ErrorBoundary';
 import About from './routes/aboutpage';
 import Layout from './Layout';
 import CharacterDetails from './routes/CharacterDetails';
+import NotFound from './routes/Notfound';
 
 const router = createBrowserRouter([
   {
@@ -16,11 +17,7 @@ const router = createBrowserRouter([
         <Layout />
       </ErrorBoundary>
     ),
-    errorElement: (
-      <ErrorBoundary>
-        <div>Route Error</div>
-      </ErrorBoundary>
-    ),
+
     children: [
       {
         path: '/',
@@ -35,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'about',
         element: <About />,
+      },
+      {
+        path: '*',
+        element: <NotFound />,
       },
     ],
   },
