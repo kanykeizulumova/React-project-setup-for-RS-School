@@ -13,9 +13,9 @@ export default function About() {
         <a href="https://rs.school/courses/reactjs">RS School React course</a>.
       </p>
 
-      <button type="button" id="backtobtn">
-        <Link to="/">⬅️</Link>
-      </button>
+      <Link id="backtobtn" to="/">
+        ⬅️
+      </Link>
     </div>
   );
 }
