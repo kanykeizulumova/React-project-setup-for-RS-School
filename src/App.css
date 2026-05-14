@@ -187,8 +187,5 @@ input:focus {
   z-index: 1000;
   background-color: transparent;
   font-size: xx-large;
-
-  a {
-    all: unset;
-  }
+  text-decoration: none;
 }

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 export default function CharacterDetails() {
-  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('details');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [character, setCharacter] = useState(null);
@@ -33,15 +34,17 @@ export default function CharacterDetails() {
       // eslint-disable-next-line no-console
       console.error('Fetch Error:', errorMessage);
     }
-  }, [id]);
+  }, [id, navigate]);
 
   useEffect(() => {
+    if (!id) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadData();
-  }, [loadData]);
+  }, [loadData, id]);
+
   if (isLoading) return <div>Загрузка...</div>;
   if (error) return <div className="error-msg">{error}</div>;
-  if (!character) return <div>Выберите персонажа</div>;
+  if (!character) return <div />;
   return (
     <div className="details">
       <h2>{character.name}</h2>

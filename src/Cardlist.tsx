@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import Card from './Card.tsx';
 import type { CardProps } from './Card.tsx';
 
@@ -17,14 +17,22 @@ const CardList = ({
   currentPage,
   totalPages,
 }: CardListProps) => {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('query') || '';
+  const page = searchParams.get('page') || '1';
+
   if (items.length === 0) {
     return <p>No results found.</p>;
   }
+
   return (
     <div>
       <div className="card-list">
         {items.map((char) => (
-          <Link to={`/character/${char.id}`} key={char.id}>
+          <Link
+            to={`/?page=${page}&query=${query}&details=${char.id}`}
+            key={char.id}
+          >
             <Card
               id={char.id}
               name={char.name}
