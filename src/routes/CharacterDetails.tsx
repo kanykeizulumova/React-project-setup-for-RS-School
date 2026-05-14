@@ -4,6 +4,8 @@ import { useNavigate, useSearchParams } from 'react-router';
 export default function CharacterDetails() {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('details');
+  const query = searchParams.get('query') || '';
+  const page = searchParams.get('page') || '1';
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [character, setCharacter] = useState(null);
@@ -42,6 +44,11 @@ export default function CharacterDetails() {
     loadData();
   }, [loadData, id]);
 
+  const closeCharacter = () => {
+    setCharacter(null);
+    navigate(`/?page=${page}&query=${query}`);
+  };
+
   if (isLoading) return <div>Загрузка...</div>;
   if (error) return <div className="error-msg">{error}</div>;
   if (!character) return <div />;
@@ -63,7 +70,9 @@ export default function CharacterDetails() {
       <p>{character.episode.length}</p>
       <h3>URL: </h3>
       <p>{character.url}</p>
-      <button type="button">X</button>
+      <button className="close-btn" type="button" onClick={closeCharacter}>
+        X
+      </button>
     </div>
   );
 }
