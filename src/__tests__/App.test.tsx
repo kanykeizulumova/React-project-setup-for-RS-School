@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router';
 import App from '../App';
 
 afterEach(() => {
@@ -13,14 +14,22 @@ test('renders search bar', async () => {
     json: async () => ({ results: [], info: { pages: 0 } }),
   });
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
   expect(screen.getByPlaceholderText(/Type name.../i)).toBeInTheDocument();
 });
 
 test('shows loading state', async () => {
   globalThis.fetch = vi.fn().mockImplementation(() => new Promise(() => {})); // Never resolves
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 });
 
@@ -44,7 +53,11 @@ test('Search on searchbar', async () => {
   });
   const user = userEvent.setup();
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
   await user.type(input, 'Rick{Enter}');
@@ -55,7 +68,7 @@ test('Search on searchbar', async () => {
     name: /test rick/i,
   });
   expect(nameElement).toBeInTheDocument();
-  expect(screen.getByText(/Status: Alive/i)).toBeInTheDocument();
+  expect(screen.getByText(/Alive/i)).toBeInTheDocument();
 });
 
 test('displays an error message when the server crashes', async () => {
@@ -64,7 +77,11 @@ test('displays an error message when the server crashes', async () => {
     status: 500,
   });
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   const errorMessage = await screen.findByText(/Server error: 500/i);
 
@@ -78,7 +95,11 @@ test('should show "Nothing found" message on 404 error', async () => {
     status: 404,
   });
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
@@ -109,7 +130,11 @@ test('Previous button work', async () => {
   });
 
   const user = userEvent.setup();
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   const prevButton = await screen.findByRole('button', { name: /previous/i });
 
@@ -135,7 +160,11 @@ test('reset button clears input and localStorage', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
   const user = userEvent.setup();
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   const resetButton = await screen.findByRole('button', { name: /reset/i });
   await user.click(resetButton);
@@ -148,7 +177,11 @@ test('reset button clears input and localStorage', async () => {
 test('reads search term from localStorage on mount', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
   expect(input).toHaveValue('Rick');
@@ -163,7 +196,11 @@ test('writes search term to localStorage on search', async () => {
     json: async () => ({ results: [], info: { pages: 0 } }),
   });
 
-  render(<App />);
+  render(
+    <MemoryRouter>
+      <App />
+    </MemoryRouter>
+  );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
   await user.type(input, 'Morty');

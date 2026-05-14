@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
+import { MemoryRouter } from 'react-router';
 import App from '../App';
-import ErrorBoundary from '../ErrorBoundary';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 test('Test the simulate crash button and check refresh button', async () => {
   globalThis.fetch = vi.fn().mockResolvedValue({
@@ -11,7 +12,9 @@ test('Test the simulate crash button and check refresh button', async () => {
   });
   render(
     <ErrorBoundary>
-      <App />
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
     </ErrorBoundary>
   );
   const user = userEvent.setup();
@@ -47,7 +50,9 @@ test('should call window.location.reload when Refresh button is clicked', async 
 
   render(
     <ErrorBoundary>
-      <App />
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
     </ErrorBoundary>
   );
   const user = userEvent.setup();

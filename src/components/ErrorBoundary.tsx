@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import '../App.css';
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -25,10 +25,14 @@ class ErrorBoundary extends React.Component<
 
     if (hasError) {
       return (
-        <div style={{ textAlign: 'center', padding: '50px' }}>
+        <div className="error-screen">
           <h1>Oops, something went wrong! 😭</h1>
           <p>Please try refreshing the page</p>
-          <button type="button" onClick={() => window.location.reload()}>
+          <button
+            className="refresh-btn"
+            type="button"
+            onClick={() => window.location.reload()}
+          >
             Refresh
           </button>
         </div>
