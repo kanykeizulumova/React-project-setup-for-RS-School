@@ -23,7 +23,10 @@ const Card = ({
     <img src={imageUrl} alt={name} />
     <h3>{name}</h3>
     <p className="species">Species: {species}</p>
-    <p className={status.toLowerCase()}>Status: {status}</p>
+    <p>
+      Status:{' '}
+      <span className={`status-pill ${status.toLowerCase()}`}>{status}</span>
+    </p>
     <p className={gender.toLowerCase()}> Gender: {gender}</p>
     <p>
       <b>Last location:</b> {location}

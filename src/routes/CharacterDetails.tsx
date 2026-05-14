@@ -60,8 +60,12 @@ export default function CharacterDetails() {
       <p>{character.species}</p>
       <h2>Gender:</h2>
       <p>{character.gender}</p>
-      <h2>Status:</h2>
-      <p>{character.status}</p>
+      <p>
+        Status:{' '}
+        <span className={`status-pill ${character.status.toLowerCase()}`}>
+          {character.status}
+        </span>
+      </p>
       <h2>Location:</h2>
       <p>{character.location.name}</p>
       <h2>origin: </h2>
@@ -69,7 +73,9 @@ export default function CharacterDetails() {
       <h2>Total episode count: </h2>
       <p>{character.episode.length}</p>
       <h3>URL: </h3>
-      <p>{character.url}</p>
+      <a href={character.url} target="_blank" rel="noreferrer">
+        {character.url}
+      </a>
       <button className="close-btn" type="button" onClick={closeCharacter}>
         X
       </button>
