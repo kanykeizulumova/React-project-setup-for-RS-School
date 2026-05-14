@@ -31,8 +31,9 @@ test('отображает имя персонажа', () => {
   expect(image).toBeInTheDocument();
   expect(image).toHaveAttribute('src', 'https://example.com/rick.png');
 
-  const statusParagraph = screen.getByText(/Status: Alive/i);
-  expect(statusParagraph).toHaveClass('alive');
+  const statusPill = screen.getByText(/Alive/i);
+  expect(statusPill).toHaveClass('status-pill');
+  expect(statusPill).toHaveClass('alive');
 
   const nameElement = screen.getByRole('heading', { name: /rick sanchez/i });
   expect(nameElement).toBeInTheDocument();

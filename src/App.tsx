@@ -75,7 +75,7 @@ const App = () => {
     if (!query && searchQuery !== '') {
       setSearchParams({ query: searchQuery, page });
     }
-  }, [query, page, searchQuery, setSearchParams]);
+  }, [query, page, searchQuery, setSearchParams, searchParams]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

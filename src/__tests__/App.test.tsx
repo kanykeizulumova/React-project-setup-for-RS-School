@@ -68,7 +68,7 @@ test('Search on searchbar', async () => {
     name: /test rick/i,
   });
   expect(nameElement).toBeInTheDocument();
-  expect(screen.getByText(/Status: Alive/i)).toBeInTheDocument();
+  expect(screen.getByText(/Alive/i)).toBeInTheDocument();
 });
 
 test('displays an error message when the server crashes', async () => {
