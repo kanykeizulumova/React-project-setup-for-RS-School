@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import '../App.css';
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },

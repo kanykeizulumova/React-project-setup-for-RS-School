@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import App from '../App';
-import ErrorBoundary from '../ErrorBoundary';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 test('Test the simulate crash button and check refresh button', async () => {
   globalThis.fetch = vi.fn().mockResolvedValue({

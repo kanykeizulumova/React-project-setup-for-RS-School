@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import SearchBar from '../Searchbar';
+import SearchBar from '../components/Searchbar';
 
 test('calls onSearchClick when the Search button is clicked', async () => {
   // 1. Create a "spy" (dummy function)

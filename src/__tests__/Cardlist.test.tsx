@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
-import CardList from '../Cardlist';
+import CardList from '../components/Cardlist';
 
 test('No character found test', () => {
   render(

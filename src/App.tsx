@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link, Outlet } from 'react-router';
 import './App.css';
-import CardList from './Cardlist.tsx';
-import SearchBar from './Searchbar.tsx';
-import useLocalStorage from './LocalStorageHook.tsx';
+import CardList from './components/Cardlist.tsx';
+import SearchBar from './components/Searchbar.tsx';
+import useLocalStorage from './hooks/useLocalStorage.tsx';
 
 interface Character {
   id: number;

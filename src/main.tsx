@@ -3,7 +3,7 @@ import './index.css';
 import { StrictMode } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router';
 import App from './App';
-import ErrorBoundary from './ErrorBoundary';
+import ErrorBoundary from './components/ErrorBoundary';
 import About from './routes/aboutpage';
 import Layout from './Layout';
 import CharacterDetails from './routes/CharacterDetails';

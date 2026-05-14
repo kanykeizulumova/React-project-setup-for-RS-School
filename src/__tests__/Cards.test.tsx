@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Card from '../Card';
+import Card from '../components/Card';
 
 test('отображает имя персонажа', () => {
   const mockData = {
