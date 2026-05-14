@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 export default function CharacterDetails() {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [character, setCharacter] = useState(null);
+  const navigate = useNavigate();
 
   const loadData = useCallback(async () => {
     setIsLoading(true);
@@ -16,6 +17,10 @@ export default function CharacterDetails() {
       );
 
       if (!response.ok) {
+        if (response.status === 404) {
+          navigate('/404');
+          return;
+        }
         throw new Error(`Server error: ${response.status}`);
       }
 
@@ -49,9 +54,13 @@ export default function CharacterDetails() {
       <p>{character.status}</p>
       <h2>Location:</h2>
       <p>{character.location.name}</p>
-      <p>origin: {character.origin.name}</p>
-      <p>Total episode count: {character.episode.length}</p>
-      <p>url: {character.url}</p>
+      <h2>origin: </h2>
+      <p>{character.origin.name}</p>
+      <h2>Total episode count: </h2>
+      <p>{character.episode.length}</p>
+      <h3>URL: </h3>
+      <p>{character.url}</p>
+      <button type="button">X</button>
     </div>
   );
 }
