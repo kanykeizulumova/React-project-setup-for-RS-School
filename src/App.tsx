@@ -63,6 +63,15 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    if (!searchParams.has('page')) {
+      setSearchParams(
+        (prev) => {
+          prev.set('page', '1');
+          return prev;
+        },
+        { replace: true }
+      );
+    }
     if (!query && searchQuery !== '') {
       setSearchParams({ query: searchQuery, page });
     }

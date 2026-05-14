@@ -49,7 +49,7 @@ export default function CharacterDetails() {
     navigate(`/?page=${page}&query=${query}`);
   };
 
-  if (isLoading) return <div>Загрузка...</div>;
+  if (isLoading) return <div className="loader">Loading...</div>;
   if (error) return <div className="error-msg">{error}</div>;
   if (!character) return <div />;
   return (
