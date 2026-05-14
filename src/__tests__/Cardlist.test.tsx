@@ -2,17 +2,20 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import '@testing-library/jest-dom';
+import { MemoryRouter } from 'react-router';
 import CardList from '../Cardlist';
 
 test('No character found test', () => {
   render(
-    <CardList
-      items={[]}
-      onNext={vi.fn()}
-      onPrev={vi.fn()}
-      currentPage={1}
-      totalPages={0}
-    />
+    <MemoryRouter>
+      <CardList
+        items={[]}
+        onNext={vi.fn()}
+        onPrev={vi.fn()}
+        currentPage={1}
+        totalPages={0}
+      />
+    </MemoryRouter>
   );
 
   expect(screen.getByText(/No results found/i)).toBeInTheDocument();
@@ -47,13 +50,15 @@ test('Next button click', async () => {
     },
   ];
   render(
-    <CardList
-      items={mockItems}
-      onNext={onNextMock}
-      onPrev={vi.fn()}
-      currentPage={2}
-      totalPages={5}
-    />
+    <MemoryRouter>
+      <CardList
+        items={mockItems}
+        onNext={onNextMock}
+        onPrev={vi.fn()}
+        currentPage={2}
+        totalPages={5}
+      />
+    </MemoryRouter>
   );
 
   const nextButton = screen.getByRole('button', { name: /next/i });
