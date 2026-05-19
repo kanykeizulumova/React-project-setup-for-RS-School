@@ -1,66 +1,24 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, Link, Outlet } from 'react-router';
 import './App.css';
 import CardList from './components/Cardlist.tsx';
 import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
-
-interface Character {
-  id: number;
-  name: string;
-  species: string;
-  status: string;
-  gender: string;
-  location: { name: string; url: string };
-  image: string;
-}
+import useCharacterStore from './store/useCharacters.tsx';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [shouldThrow, setShouldThrow] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
   const id = searchParams.get('details');
 
-  const fetchData = useCallback(async (name: string, pageNumber = 1) => {
-    setIsLoading(true);
-    setError(null);
-
-    const trimmedName = name.trim();
-
-    try {
-      localStorage.setItem('searchQuery', trimmedName);
-
-      const response = await fetch(
-        `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${pageNumber}`
-      );
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          setCharacters([]);
-          setIsLoading(false);
-          return;
-        }
-        throw new Error(`Server error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCharacters(data.results);
-      setIsLoading(false);
-      setTotalPages(data.info.pages);
-    } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : 'Unknown error';
-      setError(errorMessage);
-      setIsLoading(false);
-      // eslint-disable-next-line no-console
-      console.error('Fetch Error:', errorMessage);
-    }
-  }, []);
+  const characters = useCharacterStore((state) => state.characters);
+  const isLoading = useCharacterStore((state) => state.isLoading);
+  const fetchData = useCharacterStore((state) => state.fetchData);
+  const error = useCharacterStore((state) => state.error);
+  const totalPages = useCharacterStore((state) => state.totalPages);
 
   useEffect(() => {
     if (!searchParams.has('page')) {
@@ -78,7 +36,6 @@ const App = () => {
   }, [query, page, searchQuery, setSearchParams, searchParams]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData(query, Number(page));
   }, [query, page, fetchData]);
 
