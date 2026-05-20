@@ -6,6 +6,7 @@ import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
 import useCharacterStore from './store/useCharacters.tsx';
 import useCheckboxStore from './store/useCheckbox.tsx';
+import downloadCSV from './downloadCSV.tsx';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
@@ -22,6 +23,8 @@ const App = () => {
   const totalPages = useCharacterStore((state) => state.totalPages);
   const unselectAll = useCheckboxStore((state) => state.unselectAll);
   const countSelectedItems = useCheckboxStore((state) => state.selectedIds);
+
+  const getSelectedCards = useCharacterStore((state) => state.getSelectedCards);
 
   useEffect(() => {
     if (!searchParams.has('page')) {
@@ -129,7 +132,15 @@ const App = () => {
           >
             Unselect all
           </button>
-          <button type="button">Download</button>
+          <button
+            type="button"
+            onClick={() => {
+              const selectedData = getSelectedCards();
+              downloadCSV(selectedData, `${selectedData.length}_items.csv`);
+            }}
+          >
+            Download
+          </button>
         </div>
       </main>
 

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import useCheckboxStore from './useCheckbox';
 
 interface Character {
   id: number;
@@ -25,11 +26,12 @@ interface CharacterStore {
   detailsError: string | null;
   fetchCharacterDetails: (id: string) => Promise<void>;
   clearSelectedCharacter: () => void;
+  getSelectedCards: () => Character[];
 }
 
 const useCharacterStore = create<CharacterStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       characters: [],
       isLoading: false,
       error: null,
@@ -93,6 +95,14 @@ const useCharacterStore = create<CharacterStore>()(
 
       clearSelectedCharacter: () =>
         set({ selectedCharacter: null, detailsError: null }),
+
+      getSelectedCards: () => {
+        const currentIds = useCheckboxStore.getState().selectedIds;
+
+        return get().characters.filter((char) =>
+          currentIds.includes(char.id.toString())
+        );
+      },
     }),
     {
       name: 'character-storage',
