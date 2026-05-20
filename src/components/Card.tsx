@@ -1,4 +1,5 @@
 import '../App.css';
+import useCheckboxStore from '../store/useCheckbox.tsx';
 
 export interface CardProps {
   id: string;
@@ -18,20 +19,36 @@ const Card = ({
   status,
   gender,
   location,
-}: CardProps) => (
-  <div className="card" id={id}>
-    <img src={imageUrl} alt={name} />
-    <h3>{name}</h3>
-    <p className="species">Species: {species}</p>
-    <p>
-      Status:{' '}
-      <span className={`status-pill ${status.toLowerCase()}`}>{status}</span>
-    </p>
-    <p className={gender.toLowerCase()}> Gender: {gender}</p>
-    <p>
-      <b>Last location:</b> {location}
-    </p>
-  </div>
-);
+}: CardProps) => {
+  const selectedIds = useCheckboxStore((state) => state.selectedIds);
+  const handleCheckboxChange = useCheckboxStore(
+    (state) => state.handleCheckboxChange
+  );
+
+  return (
+    <div>
+      <input
+        type="checkbox"
+        checked={selectedIds.includes(id)}
+        onChange={() => handleCheckboxChange(id)}
+      />
+      <div className="card" id={id}>
+        <img src={imageUrl} alt={name} />
+        <h3>{name}</h3>
+        <p className="species">Species: {species}</p>
+        <p>
+          Status:{' '}
+          <span className={`status-pill ${status.toLowerCase()}`}>
+            {status}
+          </span>
+        </p>
+        <p className={gender.toLowerCase()}> Gender: {gender}</p>
+        <p>
+          <b>Last location:</b> {location}
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default Card;
