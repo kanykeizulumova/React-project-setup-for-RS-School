@@ -1,51 +1,33 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
+import useCharacterStore from '../store/useCharacters';
 
 export default function CharacterDetails() {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('details');
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [character, setCharacter] = useState(null);
+  const character = useCharacterStore((state) => state.selectedCharacter);
+  const isLoading = useCharacterStore((state) => state.isDetailsLoading);
+  const loadData = useCharacterStore((state) => state.fetchCharacterDetails);
+  const error = useCharacterStore((state) => state.detailsError);
+  const clearSelectedCharacter = useCharacterStore(
+    (state) => state.clearSelectedCharacter
+  );
   const navigate = useNavigate();
 
-  const loadData = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        `https://rickandmortyapi.com/api/character/${id}`
-      );
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          navigate('/404');
-          return;
-        }
-        throw new Error(`Server error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCharacter(data);
-      setIsLoading(false);
-    } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : 'Unknown error';
-      setError(errorMessage);
-      // eslint-disable-next-line no-console
-      console.error('Fetch Error:', errorMessage);
-    }
-  }, [id, navigate]);
-
   useEffect(() => {
-    if (!id) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadData();
-  }, [loadData, id]);
+    if (id) {
+      loadData(id);
+    }
+
+    return () => {
+      clearSelectedCharacter();
+    };
+  }, [id, loadData, clearSelectedCharacter]);
 
   const closeCharacter = () => {
-    setCharacter(null);
+    clearSelectedCharacter();
     navigate(`/?page=${page}&query=${query}`);
   };
 
