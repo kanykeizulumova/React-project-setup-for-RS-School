@@ -26,11 +26,17 @@ const Card = ({
   );
 
   return (
-    <div>
+    <div className="card-container">
       <input
         type="checkbox"
+        className="checkbox"
         checked={selectedIds.includes(id)}
-        onChange={() => handleCheckboxChange(id)}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        onChange={() => {
+          handleCheckboxChange(id);
+        }}
       />
       <div className="card" id={id}>
         <img src={imageUrl} alt={name} />
