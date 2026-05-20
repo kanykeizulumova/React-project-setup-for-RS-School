@@ -398,3 +398,55 @@ footer {
   color: #ff4d4d;
   box-shadow: 0 4px 12px rgba(255, 77, 77, 0.15);
 }
+
+.card-container {
+  position: relative;
+  width: 100%;
+}
+
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 26px;
+  height: 26px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  background: rgba(23, 25, 35, 0.6);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.checkbox:hover {
+  border-color: var(--accent);
+  transform: scale(1.1);
+  box-shadow:
+    0 0 12px var(--accent-glow),
+    inset 0 0 6px rgba(255, 255, 255, 0.1);
+}
+
+.checkbox:checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  box-shadow:
+    0 0 15px var(--accent-glow),
+    0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.checkbox:checked::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 11px;
+  border: solid var(--bg-dark);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
