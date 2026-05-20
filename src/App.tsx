@@ -5,6 +5,7 @@ import CardList from './components/Cardlist.tsx';
 import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
 import useCharacterStore from './store/useCharacters.tsx';
+import useCheckboxStore from './store/useCheckbox.tsx';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
@@ -19,6 +20,8 @@ const App = () => {
   const fetchData = useCharacterStore((state) => state.fetchData);
   const error = useCharacterStore((state) => state.error);
   const totalPages = useCharacterStore((state) => state.totalPages);
+  const unselectAll = useCheckboxStore((state) => state.unselectAll);
+  const countSelectedItems = useCheckboxStore((state) => state.selectedIds);
 
   useEffect(() => {
     if (!searchParams.has('page')) {
@@ -110,6 +113,23 @@ const App = () => {
         <div className={id ? 'column-left' : 'card-lists'}>{mainContent}</div>
         <div className="details-side">
           <Outlet />
+        </div>
+        <div
+          className={
+            countSelectedItems.length > 0
+              ? 'check-buttons'
+              : 'check-buttons-close'
+          }
+        >
+          <p className="flyout">Selected: {countSelectedItems.length} cards</p>
+          <button
+            type="button"
+            className="unsellect"
+            onClick={() => unselectAll()}
+          >
+            Unselect all
+          </button>
+          <button type="button">Download</button>
         </div>
       </main>
 

@@ -310,3 +310,91 @@ footer {
 .refresh-btn:hover {
   transform: scale(1.1);
 }
+
+/* ==========================================================================
+   7. CHECKBOX FLYOUT PANEL
+   ========================================================================== */
+.check-buttons {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 28px;
+  background: rgba(23, 25, 35, 0.85);
+  border: 1px solid var(--accent);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 25px var(--accent-glow);
+  backdrop-filter: blur(16px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.check-buttons-close {
+  display: none;
+}
+
+.check-buttons p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.3s ease;
+}
+
+.flyout {
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.flyout-close {
+  color: var(--text-muted);
+}
+
+.check-buttons button {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.check-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.check-buttons button:not(.unsellect) {
+  background: var(--accent);
+  color: var(--bg-dark);
+  border: 1px solid var(--accent);
+  font-weight: 800;
+}
+
+.check-buttons button:not(.unsellect):hover {
+  background: #a9e05a;
+  box-shadow:
+    0 4px 15px rgba(151, 206, 76, 0.4),
+    0 0 10px var(--accent-glow);
+}
+
+.check-buttons button.unsellect {
+  border-color: var(--glass-border);
+}
+
+.check-buttons button.unsellect:hover {
+  border-color: rgba(255, 77, 77, 0.5);
+  background: rgba(255, 77, 77, 0.1);
+  color: #ff4d4d;
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.15);
+}
