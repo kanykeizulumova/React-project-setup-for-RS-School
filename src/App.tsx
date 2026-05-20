@@ -24,7 +24,7 @@ const App = () => {
   const unselectAll = useCheckboxStore((state) => state.unselectAll);
   const countSelectedItems = useCheckboxStore((state) => state.selectedIds);
 
-  const getSelectedCards = useCharacterStore((state) => state.getSelectedCards);
+  const getSelectedCards = useCheckboxStore((state) => state.getSelectedCards);
 
   useEffect(() => {
     if (!searchParams.has('page')) {
@@ -134,8 +134,8 @@ const App = () => {
           </button>
           <button
             type="button"
-            onClick={() => {
-              const selectedData = getSelectedCards();
+            onClick={async () => {
+              const selectedData = await getSelectedCards();
               downloadCSV(selectedData, `${selectedData.length}_items.csv`);
             }}
           >

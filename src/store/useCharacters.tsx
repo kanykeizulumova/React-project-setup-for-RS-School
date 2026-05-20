@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import useCheckboxStore from './useCheckbox';
 
 interface Character {
   id: number;
@@ -26,92 +24,70 @@ interface CharacterStore {
   detailsError: string | null;
   fetchCharacterDetails: (id: string) => Promise<void>;
   clearSelectedCharacter: () => void;
-  getSelectedCards: () => Character[];
 }
 
-const useCharacterStore = create<CharacterStore>()(
-  persist(
-    (set, get) => ({
-      characters: [],
-      isLoading: false,
-      error: null,
-      totalPages: 0,
-      selectedCharacter: null,
-      isDetailsLoading: false,
-      detailsError: null,
+const useCharacterStore = create<CharacterStore>((set) => ({
+  characters: [],
+  isLoading: false,
+  error: null,
+  totalPages: 0,
+  selectedCharacter: null,
+  isDetailsLoading: false,
+  detailsError: null,
 
-      fetchData: async (name: string, pageNumber = 1) => {
-        set({ isLoading: true, error: null });
+  fetchData: async (name: string, pageNumber = 1) => {
+    set({ isLoading: true, error: null });
 
-        const trimmedName = name.trim();
+    const trimmedName = name.trim();
 
-        try {
-          localStorage.setItem('searchQuery', trimmedName);
+    try {
+      localStorage.setItem('searchQuery', trimmedName);
 
-          const response = await fetch(
-            `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${pageNumber}`
-          );
+      const response = await fetch(
+        `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${pageNumber}`
+      );
 
-          if (!response.ok) {
-            if (response.status === 404) {
-              set({ characters: [], isLoading: false });
-              return;
-            }
-            throw new Error(`Server error: ${response.status}`);
-          }
-
-          const data = await response.json();
-          set({
-            characters: data.results,
-            isLoading: false,
-            totalPages: data.info.pages,
-          });
-        } catch (err) {
-          const errorMessage =
-            err instanceof Error ? err.message : 'Unknown error';
-          set({ error: errorMessage, isLoading: false });
-          // eslint-disable-next-line no-console
-          console.error('Fetch Error:', errorMessage);
+      if (!response.ok) {
+        if (response.status === 404) {
+          set({ characters: [], isLoading: false });
+          return;
         }
-      },
+        throw new Error(`Server error: ${response.status}`);
+      }
 
-      fetchCharacterDetails: async (id: string) => {
-        set({ isDetailsLoading: true, detailsError: null });
-        try {
-          const response = await fetch(
-            `https://rickandmortyapi.com/api/character/${id}`
-          );
-          if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-          }
-          const data = await response.json();
-          set({ selectedCharacter: data, isDetailsLoading: false });
-        } catch (err) {
-          const errorMessage =
-            err instanceof Error ? err.message : 'Unknown error';
-          set({ detailsError: errorMessage, isDetailsLoading: false });
-        }
-      },
-
-      clearSelectedCharacter: () =>
-        set({ selectedCharacter: null, detailsError: null }),
-
-      getSelectedCards: () => {
-        const currentIds = useCheckboxStore.getState().selectedIds;
-
-        return get().characters.filter((char) =>
-          currentIds.includes(char.id.toString())
-        );
-      },
-    }),
-    {
-      name: 'character-storage',
-      partialize: (state) => ({
-        characters: state.characters,
-        totalPages: state.totalPages,
-      }),
+      const data = await response.json();
+      set({
+        characters: data.results,
+        isLoading: false,
+        totalPages: data.info.pages,
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      set({ error: errorMessage, isLoading: false });
+      // eslint-disable-next-line no-console
+      console.error('Fetch Error:', errorMessage);
     }
-  )
-);
+  },
+
+  fetchCharacterDetails: async (id: string) => {
+    set({ isDetailsLoading: true, detailsError: null });
+    try {
+      const response = await fetch(
+        `https://rickandmortyapi.com/api/character/${id}`
+      );
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      const data = await response.json();
+      set({ selectedCharacter: data, isDetailsLoading: false });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      set({ detailsError: errorMessage, isDetailsLoading: false });
+    }
+  },
+
+  clearSelectedCharacter: () =>
+    set({ selectedCharacter: null, detailsError: null }),
+}));
 
 export default useCharacterStore;
