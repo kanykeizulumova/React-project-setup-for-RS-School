@@ -7,6 +7,7 @@ import useLocalStorage from './hooks/useLocalStorage.tsx';
 import useCharacterStore from './store/useCharacters.tsx';
 import useCheckboxStore from './store/useCheckbox.tsx';
 import downloadCSV from './utils/downloadCSV.ts';
+import { useTheme } from './ThemeContext';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
@@ -25,6 +26,7 @@ const App = () => {
   const countSelectedItems = useCheckboxStore((state) => state.selectedIds);
 
   const getSelectedCards = useCheckboxStore((state) => state.getSelectedCards);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (!searchParams.has('page')) {
@@ -102,7 +104,7 @@ const App = () => {
   }
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${theme}`}>
       <header className="search-area">
         <SearchBar
           value={searchQuery}
@@ -110,6 +112,11 @@ const App = () => {
           onSearchClick={handleSearchSubmit}
           onReset={handleReset}
         />
+        <div className="theme-context">
+          <button type="button" className="switch-btn" onClick={toggleTheme}>
+            Switch Theme
+          </button>
+        </div>
       </header>
 
       <main className="result-area">

@@ -8,13 +8,16 @@ import About from './routes/aboutpage';
 import Layout from './Layout';
 import CharacterDetails from './routes/CharacterDetails';
 import NotFound from './routes/Notfound';
+import { ThemeProvider } from './ThemeContext';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <ErrorBoundary>
-        <Layout />
+        <ThemeProvider>
+          <Layout />
+        </ThemeProvider>
       </ErrorBoundary>
     ),
 
