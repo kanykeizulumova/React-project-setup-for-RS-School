@@ -1,3 +1,4 @@
+import { useNavigate, useSearchParams } from 'react-router';
 import '../App.css';
 import useCheckboxStore from '../store/useCheckbox.tsx';
 
@@ -25,20 +26,37 @@ const Card = ({
     (state) => state.handleCheckboxChange
   );
 
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const handleCardClick = () => {
+    searchParams.set('details', id);
+    navigate(`/?${searchParams.toString()}`);
+  };
+
   return (
     <div className="card-container">
       <input
         type="checkbox"
         className="checkbox"
         checked={selectedIds.includes(id)}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        onChange={() => {
-          handleCheckboxChange(id);
-        }}
+        onChange={() => handleCheckboxChange(id)}
+        onClick={() => {}}
       />
-      <div className="card" id={id}>
+      <div
+        role="button"
+        tabIndex={0}
+        className="card"
+        id={id}
+        onClick={handleCardClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCardClick();
+          }
+        }}
+        style={{ cursor: 'pointer' }}
+      >
         <img src={imageUrl} alt={name} />
         <h3>{name}</h3>
         <p className="species">Species: {species}</p>

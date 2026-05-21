@@ -1,4 +1,3 @@
-import { Link, useSearchParams } from 'react-router';
 import Card from './Card.tsx';
 import type { CardProps } from './Card.tsx';
 
@@ -17,10 +16,6 @@ const CardList = ({
   currentPage,
   totalPages,
 }: CardListProps) => {
-  const [searchParams] = useSearchParams();
-  const query = searchParams.get('query') || '';
-  const page = searchParams.get('page') || '1';
-
   if (items.length === 0) {
     return <p>No results found.</p>;
   }
@@ -29,20 +24,16 @@ const CardList = ({
     <div>
       <div className="card-list">
         {items.map((char) => (
-          <Link
-            to={`/?page=${page}&query=${query}&details=${char.id}`}
+          <Card
             key={char.id}
-          >
-            <Card
-              id={char.id}
-              name={char.name}
-              species={char.species}
-              status={char.status}
-              gender={char.gender}
-              location={char.location}
-              imageUrl={char.imageUrl}
-            />
-          </Link>
+            id={char.id}
+            name={char.name}
+            species={char.species}
+            status={char.status}
+            gender={char.gender}
+            location={char.location}
+            imageUrl={char.imageUrl}
+          />
         ))}
       </div>
       <div className="pagination-controls">
