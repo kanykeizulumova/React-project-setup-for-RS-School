@@ -16,7 +16,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    document.body.className = theme;
+    document.documentElement.className = theme;
   }, [theme]);
 
   const value = useMemo(() => ({ theme, toggleTheme }), [theme]);
@@ -26,6 +26,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {

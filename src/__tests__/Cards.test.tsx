@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import Card from '../components/Card';
 
 test('отображает имя персонажа', () => {
@@ -13,15 +14,17 @@ test('отображает имя персонажа', () => {
   };
 
   render(
-    <Card
-      id={mockData.id}
-      name={mockData.name}
-      species={mockData.species}
-      status={mockData.status}
-      gender={mockData.gender}
-      location={mockData.location}
-      imageUrl={mockData.imageUrl}
-    />
+    <MemoryRouter>
+      <Card
+        id={mockData.id}
+        name={mockData.name}
+        species={mockData.species}
+        status={mockData.status}
+        gender={mockData.gender}
+        location={mockData.location}
+        imageUrl={mockData.imageUrl}
+      />
+    </MemoryRouter>
   );
 
   const altText = screen.getByAltText('Rick Sanchez');

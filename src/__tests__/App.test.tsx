@@ -3,6 +3,7 @@ import { test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import App from '../App';
+import { ThemeProvider } from '../ThemeContext';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -15,9 +16,11 @@ test('renders search bar', async () => {
   });
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
   expect(screen.getByPlaceholderText(/Type name.../i)).toBeInTheDocument();
 });
@@ -26,9 +29,11 @@ test('shows loading state', async () => {
   globalThis.fetch = vi.fn().mockImplementation(() => new Promise(() => {})); // Never resolves
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 });
@@ -54,9 +59,11 @@ test('Search on searchbar', async () => {
   const user = userEvent.setup();
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
@@ -78,9 +85,11 @@ test('displays an error message when the server crashes', async () => {
   });
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   const errorMessage = await screen.findByText(/Server error: 500/i);
@@ -96,9 +105,11 @@ test('should show "Nothing found" message on 404 error', async () => {
   });
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -131,9 +142,11 @@ test('Previous button work', async () => {
 
   const user = userEvent.setup();
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   const prevButton = await screen.findByRole('button', { name: /previous/i });
@@ -161,9 +174,11 @@ test('reset button clears input and localStorage', async () => {
 
   const user = userEvent.setup();
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   const resetButton = await screen.findByRole('button', { name: /reset/i });
@@ -178,9 +193,11 @@ test('reads search term from localStorage on mount', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
@@ -197,9 +214,11 @@ test('writes search term to localStorage on search', async () => {
   });
 
   render(
-    <MemoryRouter>
-      <App />
-    </MemoryRouter>
+    <ThemeProvider>
+      <MemoryRouter>
+        <App />
+      </MemoryRouter>
+    </ThemeProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
