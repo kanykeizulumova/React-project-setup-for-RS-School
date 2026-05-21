@@ -6,7 +6,7 @@ import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
 import useCharacterStore from './store/useCharacters.tsx';
 import useCheckboxStore from './store/useCheckbox.tsx';
-import downloadCSV from './downloadCSV.tsx';
+import downloadCSV from './utils/downloadCSV.ts';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
