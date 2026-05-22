@@ -19,6 +19,7 @@ test('getselectedcards', async () => {
     json: async () => mockCharacters,
   });
   useCheckboxStore.getState().handleCheckboxChange('1');
+  await useCheckboxStore.getState().getSelectedCards();
 
   expect(globalThis.fetch).toHaveBeenCalledWith(
     'https://rickandmortyapi.com/api/character/1'
