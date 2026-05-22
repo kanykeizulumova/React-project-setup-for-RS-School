@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import App from '../App';
+import { ThemeProvider } from '../ThemeContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 test('Test the simulate crash button and check refresh button', async () => {
@@ -12,9 +13,11 @@ test('Test the simulate crash button and check refresh button', async () => {
   });
   render(
     <ErrorBoundary>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
     </ErrorBoundary>
   );
   const user = userEvent.setup();
@@ -22,7 +25,7 @@ test('Test the simulate crash button and check refresh button', async () => {
   const CrashButton = screen.queryByRole('button', { name: /simulate/i });
   expect(CrashButton).toBeInTheDocument();
 
-  await user.click(CrashButton);
+  await user.click(CrashButton!);
 
   const errorMessage = await screen.findByText(/oops, something went wrong!/i);
   expect(errorMessage).toBeInTheDocument();
@@ -50,16 +53,18 @@ test('should call window.location.reload when Refresh button is clicked', async 
 
   render(
     <ErrorBoundary>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
     </ErrorBoundary>
   );
   const user = userEvent.setup();
 
-  await user.click(screen.getByRole('button', { name: /simulate/i }));
-  const refreshButton = screen.getByRole('button', { name: /refresh/i });
-  await user.click(refreshButton);
+  await user.click(screen.queryByRole('button', { name: /simulate/i })!);
+  const refreshButton = screen.queryByRole('button', { name: /refresh/i });
+  await user.click(refreshButton!);
 
   expect(reloadMock).toHaveBeenCalled();
 

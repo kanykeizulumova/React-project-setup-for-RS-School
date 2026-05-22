@@ -80,7 +80,7 @@ test('reset button is displayed if the search value is not empty.', async () => 
   const resetButton = screen.queryByRole('button', { name: /reset/i });
 
   expect(resetButton).toBeInTheDocument();
-  await user.click(resetButton);
+  await user.click(resetButton!);
 
   expect(onResetSpy).toHaveBeenCalledTimes(1);
 });

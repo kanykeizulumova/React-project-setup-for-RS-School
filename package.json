@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run format && npm run lint && tsc -b && vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "husky",
@@ -24,9 +26,11 @@
     ]
   },
   "dependencies": {
+    "immer": "^11.1.8",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-router": "^7.15.0"
+    "react-router": "^7.15.0",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@eslint/compat": "^2.0.5",
@@ -52,6 +56,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
+    "gh-pages": "^6.3.0",
     "globals": "^17.5.0",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
