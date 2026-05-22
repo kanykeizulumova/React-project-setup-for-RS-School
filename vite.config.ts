@@ -35,4 +35,5 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  base: '/React-project-setup-for-RS-School/',
 });

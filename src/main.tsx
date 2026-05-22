@@ -10,39 +10,44 @@ import CharacterDetails from './routes/CharacterDetails';
 import NotFound from './routes/Notfound';
 import { ThemeProvider } from './ThemeContext';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <ErrorBoundary>
-        <ThemeProvider>
-          <Layout />
-        </ThemeProvider>
-      </ErrorBoundary>
-    ),
+const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: (
+        <ErrorBoundary>
+          <ThemeProvider>
+            <Layout />
+          </ThemeProvider>
+        </ErrorBoundary>
+      ),
 
-    children: [
-      {
-        path: '/',
-        element: <App />,
-        children: [
-          {
-            index: true,
-            element: <CharacterDetails />,
-          },
-        ],
-      },
-      {
-        path: 'about',
-        element: <About />,
-      },
-      {
-        path: '*',
-        element: <NotFound />,
-      },
-    ],
-  },
-]);
+      children: [
+        {
+          path: '/',
+          element: <App />,
+          children: [
+            {
+              index: true,
+              element: <CharacterDetails />,
+            },
+          ],
+        },
+        {
+          path: 'about',
+          element: <About />,
+        },
+        {
+          path: '*',
+          element: <NotFound />,
+        },
+      ],
+    },
+  ],
+  {
+    basename: '/React-project-setup-for-RS-School',
+  }
+);
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
