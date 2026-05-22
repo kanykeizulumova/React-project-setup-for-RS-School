@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link, Outlet } from 'react-router';
+import {
+  ReactQueryDevtools,
+  ReactQueryDevtoolsPanel,
+} from '@tanstack/react-query-devtools';
 import './App.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CardList from './components/Cardlist.tsx';
 import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
@@ -8,6 +13,15 @@ import useCharacterStore from './store/useCharacters.tsx';
 import useCheckboxStore from './store/useCheckbox.tsx';
 import downloadCSV from './utils/downloadCSV.ts';
 import { useTheme } from './ThemeContext';
+
+const queryClient = new QueryClient();
+
+// This code is only for TypeScript
+declare global {
+  interface Window {
+    __TANSTACK_QUERY_CLIENT__: import('@tanstack/query-core').QueryClient;
+  }
+}
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
@@ -27,6 +41,8 @@ const App = () => {
 
   const getSelectedCards = useCheckboxStore((state) => state.getSelectedCards);
   const { theme, toggleTheme } = useTheme();
+
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!searchParams.has('page')) {
@@ -104,66 +120,76 @@ const App = () => {
   }
 
   return (
-    <div className={`app-container ${theme}`}>
-      <header className="search-area">
-        <SearchBar
-          value={searchQuery}
-          onChange={handleInputChange}
-          onSearchClick={handleSearchSubmit}
-          onReset={handleReset}
-        />
-        <div className="theme-context">
-          <button type="button" className="switch-btn" onClick={toggleTheme}>
-            Switch Theme
-          </button>
-        </div>
-      </header>
+    <QueryClientProvider client={queryClient}>
+      <div className={`app-container ${theme}`}>
+        <header className="search-area">
+          <SearchBar
+            value={searchQuery}
+            onChange={handleInputChange}
+            onSearchClick={handleSearchSubmit}
+            onReset={handleReset}
+          />
+          <div className="theme-context">
+            <button type="button" className="switch-btn" onClick={toggleTheme}>
+              Switch Theme
+            </button>
+          </div>
+        </header>
 
-      <main className="result-area">
-        <div className={id ? 'column-left' : 'card-lists'}>{mainContent}</div>
-        <div className="details-side">
-          <Outlet />
-        </div>
-        <div
-          className={
-            countSelectedItems.length > 0
-              ? 'check-buttons'
-              : 'check-buttons-close'
-          }
+        <main className="result-area">
+          <div className={id ? 'column-left' : 'card-lists'}>{mainContent}</div>
+          <div className="details-side">
+            <Outlet />
+          </div>
+          <div
+            className={
+              countSelectedItems.length > 0
+                ? 'check-buttons'
+                : 'check-buttons-close'
+            }
+          >
+            <p className="flyout">
+              Selected: {countSelectedItems.length} cards
+            </p>
+            <button
+              type="button"
+              className="unsellect"
+              onClick={() => unselectAll()}
+            >
+              Unselect all
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                const selectedData = await getSelectedCards();
+                downloadCSV(selectedData, `${selectedData.length}_items.csv`);
+              }}
+            >
+              Download
+            </button>
+          </div>
+        </main>
+
+        <button
+          type="button"
+          className="crash-button"
+          onClick={() => setShouldThrow(true)}
         >
-          <p className="flyout">Selected: {countSelectedItems.length} cards</p>
-          <button
-            type="button"
-            className="unsellect"
-            onClick={() => unselectAll()}
-          >
-            Unselect all
+          Simulate Crash
+        </button>
+        <footer>
+          <button type="button" className="about-us">
+            <Link to="/about">About Us</Link>
           </button>
-          <button
-            type="button"
-            onClick={async () => {
-              const selectedData = await getSelectedCards();
-              downloadCSV(selectedData, `${selectedData.length}_items.csv`);
-            }}
-          >
-            Download
-          </button>
-        </div>
-      </main>
-
+        </footer>
+      </div>
+      <ReactQueryDevtools initialIsOpen={false} />
       <button
         type="button"
-        className="crash-button"
-        onClick={() => setShouldThrow(true)}
-      >
-        Simulate Crash
-      </button>
-      <footer>
-        <button type="button" className="about-us">
-          <Link to="/about">About Us</Link>
-        </button>
-      </footer>
-    </div>
+        onClick={() => setIsOpen(!isOpen)}
+      >{`${isOpen ? 'Close' : 'Open'} the devtools panel`}</button>
+      {isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
+    </QueryClientProvider>
   );
 };
 

@@ -35,5 +35,8 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-  base: '/React-project-setup-for-RS-School/',
+  base:
+    process.env.NODE_ENV === 'production'
+      ? '/React-project-setup-for-RS-School/'
+      : '/',
 });
