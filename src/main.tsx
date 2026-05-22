@@ -45,7 +45,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/React-project-setup-for-RS-School',
+    basename: import.meta.env.DEV ? '/' : '/React-project-setup-for-RS-School',
   }
 );
 
