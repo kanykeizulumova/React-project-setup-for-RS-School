@@ -13,7 +13,7 @@ export interface Character {
   url: string;
 }
 
-interface CheckboxStore {
+export interface CheckboxStore {
   unselectAll: () => void;
   selectedIds: string[];
   handleCheckboxChange: (id: string) => void;
