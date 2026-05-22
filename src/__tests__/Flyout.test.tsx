@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 
-import useCheckboxStore from '../store/useCheckbox';
+import useCheckboxStore, { type CheckboxStore } from '../store/useCheckbox';
 
 vi.mock('../store/useCheckbox', () => ({
   default: vi.fn(),
@@ -16,13 +16,13 @@ const mockGetSelectedCards = vi.fn().mockResolvedValue([]);
 const mockHandleCheckboxChange = vi.fn();
 
 const makeMockStore =
-  (selectedIds: string[]) => (selector: (state: object) => unknown) =>
+  (selectedIds: string[]) => (selector: (state: CheckboxStore) => unknown) =>
     selector({
       selectedIds,
       unselectAll: mockUnselectAll,
       getSelectedCards: mockGetSelectedCards,
       handleCheckboxChange: mockHandleCheckboxChange,
-    });
+    } as CheckboxStore);
 
 test('flyout shows buttons when items are selected', () => {
   vi.mocked(useCheckboxStore).mockImplementation(makeMockStore(['1', '2']));
