@@ -13,6 +13,7 @@ import useCheckboxStore from './store/useCheckbox.tsx';
 import downloadCSV from './utils/downloadCSV.ts';
 import { useTheme } from './ThemeContext';
 import fetchCharacters from './fetchAllCharacters.ts';
+import fetchSelectedCharacters from './apiSelected.ts';
 
 export const queryClient = new QueryClient();
 
@@ -34,7 +35,6 @@ const App = () => {
   const unselectAll = useCheckboxStore((state) => state.unselectAll);
   const countSelectedItems = useCheckboxStore((state) => state.selectedIds);
 
-  const getSelectedCards = useCheckboxStore((state) => state.getSelectedCards);
   const { theme, toggleTheme } = useTheme();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +42,12 @@ const App = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['characters', query, Number(page)],
     queryFn: fetchCharacters,
+  });
+
+  const { refetch: refetchSelected } = useQuery({
+    queryKey: ['selectedCharacters', countSelectedItems],
+    queryFn: fetchSelectedCharacters,
+    enabled: false,
   });
 
   useEffect(() => {
@@ -161,8 +167,11 @@ const App = () => {
             <button
               type="button"
               onClick={async () => {
-                const selectedData = await getSelectedCards();
-                downloadCSV(selectedData, `${selectedData.length}_items.csv`);
+                const { data: selectedData } = await refetchSelected();
+
+                if (selectedData && selectedData.length > 0) {
+                  downloadCSV(selectedData, `${selectedData.length}_items.csv`);
+                }
               }}
             >
               Download
