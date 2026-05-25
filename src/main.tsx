@@ -2,6 +2,7 @@ import * as ReactDOM from 'react-dom/client';
 import './index.css';
 import { StrictMode } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import About from './routes/aboutpage';
@@ -49,11 +50,15 @@ const router = createBrowserRouter(
   }
 );
 
+const queryClient = new QueryClient();
+
 const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>
   );
 }
