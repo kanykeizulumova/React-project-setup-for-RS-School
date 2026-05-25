@@ -5,16 +5,16 @@ import {
   ReactQueryDevtoolsPanel,
 } from '@tanstack/react-query-devtools';
 import './App.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
 import CardList from './components/Cardlist.tsx';
 import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
-import useCharacterStore from './store/useCharacters.tsx';
 import useCheckboxStore from './store/useCheckbox.tsx';
 import downloadCSV from './utils/downloadCSV.ts';
 import { useTheme } from './ThemeContext';
+import fetchCharacters from './fetchAllCharacters.ts';
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 // This code is only for TypeScript
 declare global {
@@ -31,11 +31,6 @@ const App = () => {
   const page = searchParams.get('page') || '1';
   const id = searchParams.get('details');
 
-  const characters = useCharacterStore((state) => state.characters);
-  const isLoading = useCharacterStore((state) => state.isLoading);
-  const fetchData = useCharacterStore((state) => state.fetchData);
-  const error = useCharacterStore((state) => state.error);
-  const totalPages = useCharacterStore((state) => state.totalPages);
   const unselectAll = useCheckboxStore((state) => state.unselectAll);
   const countSelectedItems = useCheckboxStore((state) => state.selectedIds);
 
@@ -44,27 +39,32 @@ const App = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['characters', query, Number(page)],
+    queryFn: fetchCharacters,
+  });
+
   useEffect(() => {
-    if (!searchParams.has('page')) {
+    if (
+      !searchParams.has('page') ||
+      (!searchParams.has('query') && searchQuery)
+    ) {
       setSearchParams(
         (prev) => {
-          prev.set('page', '1');
+          prev.set('page', prev.get('page') || '1');
+          if (searchQuery) {
+            prev.set('query', searchQuery);
+          }
           return prev;
         },
         { replace: true }
       );
     }
-    if (!query && searchQuery !== '') {
-      setSearchParams({ query: searchQuery, page });
-    }
-  }, [query, page, searchQuery, setSearchParams, searchParams]);
-
-  useEffect(() => {
-    fetchData(query, Number(page));
-  }, [query, page, fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const goToNextPage = () => {
-    if (Number(page) < totalPages) {
+    if (Number(page) < data?.info?.pages || 0) {
       const next = Number(page) + 1;
       setSearchParams({ query, page: String(next) });
     }
@@ -93,13 +93,13 @@ const App = () => {
   if (shouldThrow) throw new Error('Critical failure!');
   let mainContent;
   if (error) {
-    mainContent = <div className="error-msg">{error}</div>;
+    mainContent = <div className="error-msg">{(error as Error)?.message}</div>;
   } else if (isLoading) {
     mainContent = <div className="loader">Loading...</div>;
-  } else if (characters.length === 0) {
+  } else if (data?.results?.length === 0) {
     mainContent = <p>Nothing found</p>;
   } else {
-    const mappedItems = characters.map((c) => ({
+    const mappedItems = data.results.map((c) => ({
       id: String(c.id),
       name: c.name,
       species: c.species,
@@ -114,13 +114,13 @@ const App = () => {
         onNext={goToNextPage}
         onPrev={goToPrevPage}
         currentPage={Number(page)}
-        totalPages={totalPages}
+        totalPages={data?.info?.pages || 0}
       />
     );
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <div>
       <div className={`app-container ${theme}`}>
         <header className="search-area">
           <SearchBar
@@ -189,7 +189,7 @@ const App = () => {
         onClick={() => setIsOpen(!isOpen)}
       >{`${isOpen ? 'Close' : 'Open'} the devtools panel`}</button>
       {isOpen && <ReactQueryDevtoolsPanel onClose={() => setIsOpen(false)} />}
-    </QueryClientProvider>
+    </div>
   );
 };
 
