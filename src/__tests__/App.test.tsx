@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 
@@ -16,11 +17,13 @@ test('renders search bar', async () => {
   });
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
   expect(screen.getByPlaceholderText(/Type name.../i)).toBeInTheDocument();
 });
@@ -29,11 +32,13 @@ test('shows loading state', async () => {
   globalThis.fetch = vi.fn().mockImplementation(() => new Promise(() => {})); // Never resolves
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 });
@@ -59,11 +64,13 @@ test('Search on searchbar', async () => {
   const user = userEvent.setup();
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
@@ -85,11 +92,13 @@ test('displays an error message when the server crashes', async () => {
   });
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const errorMessage = await screen.findByText(/Server error: 500/i);
@@ -105,11 +114,13 @@ test('should show "Nothing found" message on 404 error', async () => {
   });
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -142,11 +153,13 @@ test('Previous button work', async () => {
 
   const user = userEvent.setup();
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const prevButton = await screen.findByRole('button', { name: /previous/i });
@@ -174,11 +187,13 @@ test('reset button clears input and localStorage', async () => {
 
   const user = userEvent.setup();
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const resetButton = await screen.findByRole('button', { name: /reset/i });
@@ -193,11 +208,13 @@ test('reads search term from localStorage on mount', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
@@ -214,11 +231,13 @@ test('writes search term to localStorage on search', async () => {
   });
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 
@@ -28,11 +29,13 @@ test('flyout shows buttons when items are selected', () => {
   vi.mocked(useCheckboxStore).mockImplementation(makeMockStore(['1', '2']));
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   expect(
@@ -46,11 +49,13 @@ test('clicking Unselect all calls unselectAll', async () => {
   const user = userEvent.setup();
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   await user.click(screen.getByRole('button', { name: /unselect all/i }));
@@ -63,11 +68,13 @@ test('clicking Download calls getSelectedCards', async () => {
   const user = userEvent.setup();
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   await user.click(screen.getByRole('button', { name: /download/i }));
@@ -79,11 +86,13 @@ test('flyout hidden when no items selected', () => {
   vi.mocked(useCheckboxStore).mockImplementation(makeMockStore([]));
 
   const { container } = render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const flyoutPanel = container.querySelector('.check-buttons-close');
