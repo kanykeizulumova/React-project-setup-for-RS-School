@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import fetchCharacter from '../fetchCharacterDetails';
-import { CACHE_TTL } from '../config';
+import CACHE_TTL from '../config';
 
 export default function CharacterDetails() {
   const [searchParams] = useSearchParams();

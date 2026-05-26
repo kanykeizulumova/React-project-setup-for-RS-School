@@ -14,7 +14,7 @@ import downloadCSV from './utils/downloadCSV.ts';
 import { useTheme } from './ThemeContext';
 import fetchCharacters from './fetchAllCharacters.ts';
 import fetchSelectedCharacters from './fetchSelectedCharacters.ts';
-import { CACHE_TTL } from './config';
+import CACHE_TTL from './config';
 
 export const queryClient = new QueryClient();
 
@@ -40,7 +40,7 @@ const App = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['characters', query, Number(page)],
     queryFn: fetchCharacters,
     staleTime: CACHE_TTL,
@@ -148,6 +148,17 @@ const App = () => {
         </header>
 
         <main className="result-area">
+          <div className="refresh-area">
+            <button
+              className="refresh-button"
+              type="button"
+              onClick={() => {
+                refetch();
+              }}
+            >
+              Refresh
+            </button>
+          </div>
           <div className={id ? 'column-left' : 'card-lists'}>{mainContent}</div>
           <div className="details-side">
             <Outlet />

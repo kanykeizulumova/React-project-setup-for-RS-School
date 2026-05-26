@@ -13,8 +13,15 @@
 
 .result-area {
   display: flex;
+  flex-wrap: wrap;
   gap: 40px;
   position: relative;
+}
+
+.refresh-area {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .column-left {
