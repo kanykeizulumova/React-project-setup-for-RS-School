@@ -1,4 +1,4 @@
-import { FetchError } from './FetchError';
+import FetchError from './FetchError';
 
 const fetchCharacterDetails = async ({
   queryKey,

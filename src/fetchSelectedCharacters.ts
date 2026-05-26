@@ -1,4 +1,4 @@
-import { FetchError } from './FetchError';
+import FetchError from './FetchError';
 
 export interface Character {
   id: number;
