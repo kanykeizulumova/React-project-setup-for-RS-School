@@ -13,7 +13,8 @@ import useCheckboxStore from './store/useCheckbox.tsx';
 import downloadCSV from './utils/downloadCSV.ts';
 import { useTheme } from './ThemeContext';
 import fetchCharacters from './fetchAllCharacters.ts';
-import fetchSelectedCharacters from './apiSelected.ts';
+import fetchSelectedCharacters from './fetchSelectedCharacters.ts';
+import { CACHE_TTL } from './config';
 
 export const queryClient = new QueryClient();
 
@@ -42,12 +43,16 @@ const App = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['characters', query, Number(page)],
     queryFn: fetchCharacters,
+    staleTime: CACHE_TTL,
+    gcTime: CACHE_TTL * 2,
   });
 
   const { refetch: refetchSelected } = useQuery({
     queryKey: ['selectedCharacters', countSelectedItems],
     queryFn: fetchSelectedCharacters,
     enabled: false,
+    staleTime: CACHE_TTL,
+    gcTime: CACHE_TTL * 2,
   });
 
   useEffect(() => {
