@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import fetchCharacter from '../fetchCharacterDetails';
+import { CACHE_TTL } from '../config';
 
 export default function CharacterDetails() {
   const [searchParams] = useSearchParams();
@@ -9,10 +10,12 @@ export default function CharacterDetails() {
   const page = searchParams.get('page') || '1';
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['characters', id],
     queryFn: fetchCharacter,
     enabled: !!id,
+    staleTime: CACHE_TTL,
+    gcTime: CACHE_TTL * 2,
   });
 
   const closeCharacter = () => {
@@ -50,6 +53,15 @@ export default function CharacterDetails() {
       </a>
       <button className="close-btn" type="button" onClick={closeCharacter}>
         X
+      </button>
+      <button
+        className="refresh-button"
+        type="button"
+        onClick={() => {
+          refetch();
+        }}
+      >
+        Refresh
       </button>
     </div>
   );

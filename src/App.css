@@ -304,7 +304,8 @@ footer {
   text-align: center;
 }
 
-.refresh-btn {
+.refresh-btn,
+.refresh-button {
   background: var(--accent);
   color: var(--bg-dark);
   border: none;
@@ -315,7 +316,8 @@ footer {
   transition: 0.3s;
 }
 
-.refresh-btn:hover {
+.refresh-btn:hover,
+.refresh-button:hover {
   transform: scale(1.1);
 }
 
@@ -555,4 +557,16 @@ body.dark {
 
 .switch-btn:active {
   transform: translateY(0);
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--accent-bg);
+  border-bottom-color: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  margin: 50px auto;
 }
