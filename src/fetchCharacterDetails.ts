@@ -1,3 +1,5 @@
+import { FetchError } from './FetchError';
+
 const fetchCharacterDetails = async ({
   queryKey,
 }: {
@@ -9,7 +11,7 @@ const fetchCharacterDetails = async ({
 
   const res = await fetch(`https://rickandmortyapi.com/api/character/${id}`);
   if (!res.ok) {
-    throw new Error('Network response was not ok');
+    throw new FetchError('Network response was not ok', res.status);
   }
   return res.json();
 };

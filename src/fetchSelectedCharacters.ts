@@ -1,3 +1,5 @@
+import { FetchError } from './FetchError';
+
 export interface Character {
   id: number;
   name: string;
@@ -23,7 +25,7 @@ const fetchSelectedCharacters = async ({
     `https://rickandmortyapi.com/api/character/${ids.join(',')}`
   );
   if (!res.ok) {
-    throw new Error('Network response was not ok');
+    throw new FetchError('Network response was not ok', res.status);
   }
 
   const data = await res.json();

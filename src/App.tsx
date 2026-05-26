@@ -15,6 +15,7 @@ import { useTheme } from './ThemeContext';
 import fetchCharacters from './fetchAllCharacters.ts';
 import fetchSelectedCharacters from './fetchSelectedCharacters.ts';
 import CACHE_TTL from './config';
+import FetchError from './FetchError';
 
 // This code is only for TypeScript
 declare global {
@@ -103,7 +104,41 @@ const App = () => {
   if (shouldThrow) throw new Error('Critical failure!');
   let mainContent;
   if (error) {
-    mainContent = <div className="error-msg">{(error as Error)?.message}</div>;
+    if (error && typeof error === 'object' && 'status' in error) {
+      const fetchError = error as FetchError;
+      if (fetchError.status === 404) {
+        mainContent = (
+          <div className="error-msg">
+            Nothing found (Error 404). Try changing your search query.
+          </div>
+        );
+      } else if (fetchError.status === 429) {
+        mainContent = (
+          <div className="error-msg">
+            Too many requests (Error 429). Please wait a moment and try again.
+          </div>
+        );
+      } else if (fetchError.status >= 500) {
+        mainContent = (
+          <div className="error-msg">
+            The server is temporarily unavailable (Error {fetchError.status}).
+            Please try again later.
+          </div>
+        );
+      } else {
+        mainContent = (
+          <div className="error-msg">
+            An unexpected API error occurred (Code: {fetchError.status}).
+          </div>
+        );
+      }
+    } else {
+      mainContent = (
+        <div className="error-msg">
+          Network problem. Please check your internet connection.
+        </div>
+      );
+    }
   } else if (isLoading) {
     mainContent = <div className="loader">Loading...</div>;
   } else if (data?.results?.length === 0) {

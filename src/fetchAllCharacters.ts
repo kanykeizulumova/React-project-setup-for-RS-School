@@ -1,3 +1,5 @@
+import { FetchError } from './FetchError';
+
 const fetchAllCharacters = async ({
   queryKey,
 }: {
@@ -10,7 +12,7 @@ const fetchAllCharacters = async ({
     `https://rickandmortyapi.com/api/character/?name=${trimmedName}&page=${pageNumber}`
   );
   if (!res.ok) {
-    throw new Error('Network response was not ok');
+    throw new FetchError('Network response was not ok', res.status);
   }
   return res.json();
 };
