@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import fetchCharacter from '../fetchCharacterDetails';
 import CACHE_TTL from '../config';
 
@@ -9,8 +9,9 @@ export default function CharacterDetails() {
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['characters', id],
     queryFn: fetchCharacter,
     enabled: !!id,
@@ -58,7 +59,7 @@ export default function CharacterDetails() {
         className="refresh-button"
         type="button"
         onClick={() => {
-          refetch();
+          queryClient.invalidateQueries({ queryKey: ['characters'] });
         }}
       >
         Refresh

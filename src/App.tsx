@@ -5,7 +5,7 @@ import {
   ReactQueryDevtoolsPanel,
 } from '@tanstack/react-query-devtools';
 import './App.css';
-import { QueryClient, useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CardList from './components/Cardlist.tsx';
 import SearchBar from './components/Searchbar.tsx';
 import useLocalStorage from './hooks/useLocalStorage.tsx';
@@ -16,8 +16,6 @@ import fetchCharacters from './fetchAllCharacters.ts';
 import fetchSelectedCharacters from './fetchSelectedCharacters.ts';
 import CACHE_TTL from './config';
 
-export const queryClient = new QueryClient();
-
 // This code is only for TypeScript
 declare global {
   interface Window {
@@ -26,6 +24,7 @@ declare global {
 }
 
 const App = () => {
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useLocalStorage('searchQuery', '');
   const [shouldThrow, setShouldThrow] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,7 +39,7 @@ const App = () => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['characters', query, Number(page)],
     queryFn: fetchCharacters,
     staleTime: CACHE_TTL,
@@ -153,7 +152,7 @@ const App = () => {
               className="refresh-button"
               type="button"
               onClick={() => {
-                refetch();
+                queryClient.invalidateQueries({ queryKey: ['characters'] });
               }}
             >
               Refresh
