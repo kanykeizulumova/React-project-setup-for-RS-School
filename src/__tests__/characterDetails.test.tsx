@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CharacterDetails from '../routes/CharacterDetails';
 
 afterEach(() => {
@@ -13,11 +14,14 @@ test('should show "Nothing found" message on 404 error', async () => {
     ok: false,
     status: 404,
   });
+  const queryClient = new QueryClient();
 
   render(
-    <MemoryRouter initialEntries={['/?details=1']}>
-      <CharacterDetails />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={['/?details=1']}>
+        <CharacterDetails />
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
@@ -38,12 +42,15 @@ test('Close button close panel', async () => {
       url: '',
     }),
   });
+  const queryClient = new QueryClient();
 
   const user = userEvent.setup();
   render(
-    <MemoryRouter initialEntries={['/?details=1']}>
-      <CharacterDetails />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={['/?details=1']}>
+        <CharacterDetails />
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 
   const closeButton = await screen.findByRole('button', { name: /X/i });
