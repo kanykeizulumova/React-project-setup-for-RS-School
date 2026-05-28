@@ -153,6 +153,69 @@ test('should show "Nothing found" message on 404 error', async () => {
   expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
 });
 
+test('should show "Too many requests " message on 429 error', async () => {
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: false,
+    status: 429,
+  });
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+  const nothingFoundMsg = await screen.findByText(/Too many requests/i);
+
+  expect(nothingFoundMsg).toBeInTheDocument();
+
+  expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+});
+
+test('should show "An unexpected API error occurred" message on 403 error', async () => {
+  globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+  const nothingFoundMsg = await screen.findByText(
+    /network problem. Please check your internet connection/i
+  );
+
+  expect(nothingFoundMsg).toBeInTheDocument();
+
+  expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+});
+
 test('Previous button work', async () => {
   globalThis.fetch = vi.fn().mockResolvedValue({
     ok: true,
