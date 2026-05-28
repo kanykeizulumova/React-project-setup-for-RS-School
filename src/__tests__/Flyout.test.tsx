@@ -7,13 +7,17 @@ import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 
 import useCheckboxStore, { type CheckboxStore } from '../store/useCheckbox';
+import fetchSelectedCharacters from '../fetchSelectedCharacters';
 
 vi.mock('../store/useCheckbox', () => ({
   default: vi.fn(),
 }));
 
+vi.mock('../fetchSelectedCharacters', () => ({
+  default: vi.fn().mockResolvedValue([]),
+}));
+
 const mockUnselectAll = vi.fn();
-const mockGetSelectedCards = vi.fn().mockResolvedValue([]);
 const mockHandleCheckboxChange = vi.fn();
 
 const makeMockStore =
@@ -21,7 +25,6 @@ const makeMockStore =
     selector({
       selectedIds,
       unselectAll: mockUnselectAll,
-      getSelectedCards: mockGetSelectedCards,
       handleCheckboxChange: mockHandleCheckboxChange,
     } as CheckboxStore);
 
@@ -78,8 +81,7 @@ test('clicking Download calls getSelectedCards', async () => {
   );
 
   await user.click(screen.getByRole('button', { name: /download/i }));
-
-  expect(mockGetSelectedCards).toHaveBeenCalled();
+  expect(fetchSelectedCharacters).toHaveBeenCalled();
 });
 
 test('flyout hidden when no items selected', () => {
