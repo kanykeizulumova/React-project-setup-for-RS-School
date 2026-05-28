@@ -144,15 +144,25 @@ const App = () => {
   } else if (data?.results?.length === 0) {
     mainContent = <p>Nothing found</p>;
   } else {
-    const mappedItems = data.results.map((c) => ({
-      id: String(c.id),
-      name: c.name,
-      species: c.species,
-      gender: c.gender,
-      status: c.status,
-      location: c.location.name,
-      imageUrl: c.image,
-    }));
+    const mappedItems = data.results.map(
+      (c: {
+        id: string | number;
+        name: string;
+        species: string;
+        gender: string;
+        status: string;
+        location: { name: string };
+        image: string;
+      }) => ({
+        id: String(c.id),
+        name: c.name,
+        species: c.species,
+        gender: c.gender,
+        status: c.status,
+        location: c.location.name,
+        imageUrl: c.image,
+      })
+    );
     mainContent = (
       <CardList
         items={mappedItems}
