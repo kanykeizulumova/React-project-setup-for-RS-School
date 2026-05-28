@@ -15,9 +15,10 @@ test('renders search bar', async () => {
     ok: true,
     json: async () => ({ results: [], info: { pages: 0 } }),
   });
+  const queryClient = new QueryClient();
 
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -31,8 +32,10 @@ test('renders search bar', async () => {
 test('shows loading state', async () => {
   globalThis.fetch = vi.fn().mockImplementation(() => new Promise(() => {})); // Never resolves
 
+  const queryClient = new QueryClient();
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -63,8 +66,10 @@ test('Search on searchbar', async () => {
   });
   const user = userEvent.setup();
 
+  const queryClient = new QueryClient();
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -91,8 +96,16 @@ test('displays an error message when the server crashes', async () => {
     status: 500,
   });
 
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -100,8 +113,9 @@ test('displays an error message when the server crashes', async () => {
       </ThemeProvider>
     </QueryClientProvider>
   );
-
-  const errorMessage = await screen.findByText(/Server error: 500/i);
+  const errorMessage = await screen.findByText(
+    /The server is temporarily unavailable/i
+  );
 
   expect(errorMessage).toBeInTheDocument();
   expect(errorMessage).toHaveClass('error-msg');
@@ -113,8 +127,16 @@ test('should show "Nothing found" message on 404 error', async () => {
     status: 404,
   });
 
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -122,7 +144,6 @@ test('should show "Nothing found" message on 404 error', async () => {
       </ThemeProvider>
     </QueryClientProvider>
   );
-
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
   const nothingFoundMsg = await screen.findByText(/nothing found/i);
@@ -152,8 +173,10 @@ test('Previous button work', async () => {
   });
 
   const user = userEvent.setup();
+  const queryClient = new QueryClient();
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -186,8 +209,10 @@ test('reset button clears input and localStorage', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
   const user = userEvent.setup();
+  const queryClient = new QueryClient();
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -195,7 +220,6 @@ test('reset button clears input and localStorage', async () => {
       </ThemeProvider>
     </QueryClientProvider>
   );
-
   const resetButton = await screen.findByRole('button', { name: /reset/i });
   await user.click(resetButton);
 
@@ -207,8 +231,10 @@ test('reset button clears input and localStorage', async () => {
 test('reads search term from localStorage on mount', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
+  const queryClient = new QueryClient();
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
@@ -230,8 +256,10 @@ test('writes search term to localStorage on search', async () => {
     json: async () => ({ results: [], info: { pages: 0 } }),
   });
 
+  const queryClient = new QueryClient();
+
   render(
-    <QueryClientProvider client={new QueryClient()}>
+    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <MemoryRouter>
           <App />
