@@ -7,6 +7,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import About from './routes/aboutpage';
 import Layout from './Layout';
 import NotFound from './routes/Notfound';
+import Terms from './routes/terms';
 import { ThemeProvider } from './ThemeContext';
 
 const router = createBrowserRouter(
@@ -30,6 +31,10 @@ const router = createBrowserRouter(
         {
           path: 'about',
           element: <About />,
+        },
+        {
+          path: 'terms',
+          element: <Terms />,
         },
         {
           path: '*',
