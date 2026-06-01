@@ -2,12 +2,10 @@ import * as ReactDOM from 'react-dom/client';
 import './index.css';
 import { StrictMode } from 'react';
 import { RouterProvider, createBrowserRouter } from 'react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import About from './routes/aboutpage';
 import Layout from './Layout';
-import CharacterDetails from './routes/CharacterDetails';
 import NotFound from './routes/Notfound';
 import { ThemeProvider } from './ThemeContext';
 
@@ -27,12 +25,7 @@ const router = createBrowserRouter(
         {
           path: '/',
           element: <App />,
-          children: [
-            {
-              index: true,
-              element: <CharacterDetails />,
-            },
-          ],
+          children: [],
         },
         {
           path: 'about',
@@ -50,15 +43,11 @@ const router = createBrowserRouter(
   }
 );
 
-const queryClient = new QueryClient();
-
 const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <RouterProvider router={router} />
     </StrictMode>
   );
 }

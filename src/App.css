@@ -40,200 +40,6 @@
 }
 
 /* ==========================================================================
-   2. SEARCH & NAVIGATION
-   ========================================================================== */
-.search-area {
-  padding: 80px 0 40px;
-  display: flex;
-  justify-content: center;
-}
-
-.search-bar {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  max-width: 700px;
-}
-
-.search-bar input {
-  flex: 1;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 16px 24px;
-  color: var(--text-main);
-  font-size: 18px;
-  backdrop-filter: blur(10px);
-  transition: 0.3s;
-}
-
-.search-bar input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-.search-bar button {
-  background: var(--accent);
-  color: var(--bg-dark);
-  border: none;
-  border-radius: 16px;
-  padding: 0 30px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.search-bar button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px var(--accent-glow);
-}
-
-.reset-btn {
-  background: var(--glass-border) !important;
-  color: var(--text-main) !important;
-}
-
-.pagination-controls {
-  padding: 40px 0;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.pagination-controls button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-main);
-  padding: 12px 24px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.pagination-controls button:not(:disabled):hover {
-  background: var(--accent);
-  color: var(--bg-dark);
-}
-
-.pagination-controls button:disabled {
-  opacity: 0.2;
-  cursor: not-allowed;
-}
-
-/* ==========================================================================
-   3. CARDS & STATUS
-   ========================================================================== */
-.card-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 32px;
-}
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
-  overflow: hidden;
-  backdrop-filter: blur(12px);
-  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: pointer;
-
-  h3 {
-    padding-left: 6px;
-  }
-
-  p {
-    padding-left: 6px;
-  }
-}
-
-.card:hover {
-  transform: translateY(-10px);
-  border-color: var(--accent);
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.4),
-    0 0 20px var(--accent-glow);
-}
-
-.card img {
-  width: 100%;
-  transition: 0.5s;
-}
-
-.card:hover img {
-  transform: scale(1.1);
-}
-
-.status-pill {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.alive {
-  color: #97ce4c;
-  background: rgba(151, 206, 76, 0.1);
-}
-
-.dead {
-  color: #ff4d4d;
-  background: rgba(255, 77, 77, 0.1);
-}
-
-/* ==========================================================================
-   4. DETAILS PANEL
-   ========================================================================== */
-.details {
-  background: var(--bg-card);
-  border: 2px solid var(--accent);
-  border-radius: 32px;
-  padding: 30px;
-  backdrop-filter: blur(20px);
-  box-shadow:
-    var(--shadow),
-    0 0 30px var(--accent-glow);
-  position: relative;
-  animation: slideIn 0.5s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--glass-border);
-  border: none;
-  color: var(--text-main);
-  cursor: pointer;
-  transition: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.close-btn:hover {
-  background: #ff4d4d;
-  transform: rotate(90deg);
-}
-
-/* ==========================================================================
    5. FOOTER & SPECIAL
    ========================================================================== */
 a {
@@ -326,146 +132,6 @@ footer {
 .refresh-btn:hover,
 .refresh-button:hover {
   transform: scale(1.1);
-}
-
-/* ==========================================================================
-   7. CHECKBOX FLYOUT PANEL
-   ========================================================================== */
-.check-buttons {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 999;
-
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 16px 28px;
-  background: rgba(23, 25, 35, 0.85);
-  border: 1px solid var(--accent);
-  border-radius: 20px;
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 25px var(--accent-glow);
-  backdrop-filter: blur(16px);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.check-buttons-close {
-  display: none;
-}
-
-.check-buttons p {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: color 0.3s ease;
-}
-
-.flyout {
-  color: var(--accent);
-  text-shadow: 0 0 8px var(--accent-glow);
-}
-
-.flyout-close {
-  color: var(--text-muted);
-}
-
-.check-buttons button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-main);
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.check-buttons button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.check-buttons button:not(.unsellect) {
-  background: var(--accent);
-  color: var(--bg-dark);
-  border: 1px solid var(--accent);
-  font-weight: 800;
-}
-
-.check-buttons button:not(.unsellect):hover {
-  background: #a9e05a;
-  box-shadow:
-    0 4px 15px rgba(151, 206, 76, 0.4),
-    0 0 10px var(--accent-glow);
-}
-
-.check-buttons button.unsellect {
-  border-color: var(--glass-border);
-}
-
-.check-buttons button.unsellect:hover {
-  border-color: rgba(255, 77, 77, 0.5);
-  background: rgba(255, 77, 77, 0.1);
-  color: #ff4d4d;
-  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.15);
-}
-
-.card-container {
-  position: relative;
-  width: 100%;
-}
-
-.checkbox {
-  appearance: none;
-  -webkit-appearance: none;
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  width: 26px;
-  height: 26px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 8px;
-  background: rgba(23, 25, 35, 0.6);
-  backdrop-filter: blur(6px);
-  cursor: pointer;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.checkbox:hover {
-  border-color: var(--accent);
-  transform: scale(1.1);
-  box-shadow:
-    0 0 12px var(--accent-glow),
-    inset 0 0 6px rgba(255, 255, 255, 0.1);
-}
-
-.checkbox:checked {
-  background-color: var(--accent);
-  border-color: var(--accent);
-  box-shadow:
-    0 0 15px var(--accent-glow),
-    0 4px 10px rgba(0, 0, 0, 0.4);
-}
-
-.checkbox:checked::after {
-  content: '';
-  display: block;
-  width: 6px;
-  height: 11px;
-  border: solid var(--bg-dark);
-  border-width: 0 3px 3px 0;
-  transform: rotate(45deg);
-  margin-bottom: 2px;
 }
 
 /* ==========================================================================
@@ -576,4 +242,39 @@ body.dark {
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
   margin: 50px auto;
+}
+
+/*    */
+
+.uncontrolled {
+  background: var(--accent);
+  color: var(--bg-dark);
+  border: none;
+  padding: 15px 40px;
+  border-radius: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.rhf-btn {
+  background: var(--accent);
+  color: var(--bg-dark);
+  border: none;
+  padding: 15px 40px;
+  border-radius: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.forms {
+  display: flex;
+  gap: 20px;
+}
+
+.search-area {
+  padding: 80px 0 40px;
+  display: flex;
+  justify-content: center;
 }
