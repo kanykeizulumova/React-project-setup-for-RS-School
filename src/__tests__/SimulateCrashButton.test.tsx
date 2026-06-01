@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -14,13 +13,11 @@ test('Test the simulate crash button and check refresh button', async () => {
   });
   render(
     <ErrorBoundary>
-      <QueryClientProvider client={new QueryClient()}>
-        <ThemeProvider>
-          <MemoryRouter>
-            <App />
-          </MemoryRouter>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
     </ErrorBoundary>
   );
   const user = userEvent.setup();
@@ -56,13 +53,11 @@ test('should call window.location.reload when Refresh button is clicked', async 
 
   render(
     <ErrorBoundary>
-      <QueryClientProvider client={new QueryClient()}>
-        <ThemeProvider>
-          <MemoryRouter>
-            <App />
-          </MemoryRouter>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
     </ErrorBoundary>
   );
   const user = userEvent.setup();
