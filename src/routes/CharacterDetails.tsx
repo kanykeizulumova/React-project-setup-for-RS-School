@@ -12,7 +12,7 @@ export default function CharacterDetails() {
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['characters', id],
+    queryKey: ['character', id],
     queryFn: fetchCharacter,
     enabled: !!id,
     staleTime: CACHE_TTL,
@@ -59,7 +59,7 @@ export default function CharacterDetails() {
         className="refresh-button"
         type="button"
         onClick={() => {
-          queryClient.invalidateQueries({ queryKey: ['characters'] });
+          queryClient.invalidateQueries({ queryKey: ['character'] });
         }}
       >
         Refresh
