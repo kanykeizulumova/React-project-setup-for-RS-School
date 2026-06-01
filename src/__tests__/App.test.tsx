@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 
@@ -14,13 +15,16 @@ test('renders search bar', async () => {
     ok: true,
     json: async () => ({ results: [], info: { pages: 0 } }),
   });
+  const queryClient = new QueryClient();
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
   expect(screen.getByPlaceholderText(/Type name.../i)).toBeInTheDocument();
 });
@@ -28,12 +32,16 @@ test('renders search bar', async () => {
 test('shows loading state', async () => {
   globalThis.fetch = vi.fn().mockImplementation(() => new Promise(() => {})); // Never resolves
 
+  const queryClient = new QueryClient();
+
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 });
@@ -58,12 +66,16 @@ test('Search on searchbar', async () => {
   });
   const user = userEvent.setup();
 
+  const queryClient = new QueryClient();
+
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
@@ -84,15 +96,26 @@ test('displays an error message when the server crashes', async () => {
     status: 500,
   });
 
-  render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
-  );
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
-  const errorMessage = await screen.findByText(/Server error: 500/i);
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+  const errorMessage = await screen.findByText(
+    /The server is temporarily unavailable/i
+  );
 
   expect(errorMessage).toBeInTheDocument();
   expect(errorMessage).toHaveClass('error-msg');
@@ -104,17 +127,89 @@ test('should show "Nothing found" message on 404 error', async () => {
     status: 404,
   });
 
-  render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
-  );
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
   expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
   const nothingFoundMsg = await screen.findByText(/nothing found/i);
+
+  expect(nothingFoundMsg).toBeInTheDocument();
+
+  expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+});
+
+test('should show "Too many requests " message on 429 error', async () => {
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: false,
+    status: 429,
+  });
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+  const nothingFoundMsg = await screen.findByText(/Too many requests/i);
+
+  expect(nothingFoundMsg).toBeInTheDocument();
+
+  expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+});
+
+test('should show "An unexpected API error occurred" message on 403 error', async () => {
+  globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
+
+  const nothingFoundMsg = await screen.findByText(
+    /network problem. Please check your internet connection/i
+  );
 
   expect(nothingFoundMsg).toBeInTheDocument();
 
@@ -141,12 +236,16 @@ test('Previous button work', async () => {
   });
 
   const user = userEvent.setup();
+  const queryClient = new QueryClient();
+
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const prevButton = await screen.findByRole('button', { name: /previous/i });
@@ -173,14 +272,17 @@ test('reset button clears input and localStorage', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
   const user = userEvent.setup();
-  render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
-  );
+  const queryClient = new QueryClient();
 
+  render(
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
   const resetButton = await screen.findByRole('button', { name: /reset/i });
   await user.click(resetButton);
 
@@ -192,12 +294,16 @@ test('reset button clears input and localStorage', async () => {
 test('reads search term from localStorage on mount', async () => {
   localStorage.setItem('searchQuery', 'Rick');
 
+  const queryClient = new QueryClient();
+
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);
@@ -213,12 +319,16 @@ test('writes search term to localStorage on search', async () => {
     json: async () => ({ results: [], info: { pages: 0 } }),
   });
 
+  const queryClient = new QueryClient();
+
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const input = screen.getByPlaceholderText(/Type name.../i);

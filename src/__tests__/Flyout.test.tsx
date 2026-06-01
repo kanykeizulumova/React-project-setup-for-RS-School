@@ -2,17 +2,22 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
 import { ThemeProvider } from '../ThemeContext';
 
 import useCheckboxStore, { type CheckboxStore } from '../store/useCheckbox';
+import fetchSelectedCharacters from '../fetchSelectedCharacters';
 
 vi.mock('../store/useCheckbox', () => ({
   default: vi.fn(),
 }));
 
+vi.mock('../fetchSelectedCharacters', () => ({
+  default: vi.fn().mockResolvedValue([]),
+}));
+
 const mockUnselectAll = vi.fn();
-const mockGetSelectedCards = vi.fn().mockResolvedValue([]);
 const mockHandleCheckboxChange = vi.fn();
 
 const makeMockStore =
@@ -20,7 +25,6 @@ const makeMockStore =
     selector({
       selectedIds,
       unselectAll: mockUnselectAll,
-      getSelectedCards: mockGetSelectedCards,
       handleCheckboxChange: mockHandleCheckboxChange,
     } as CheckboxStore);
 
@@ -28,11 +32,13 @@ test('flyout shows buttons when items are selected', () => {
   vi.mocked(useCheckboxStore).mockImplementation(makeMockStore(['1', '2']));
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   expect(
@@ -46,11 +52,13 @@ test('clicking Unselect all calls unselectAll', async () => {
   const user = userEvent.setup();
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   await user.click(screen.getByRole('button', { name: /unselect all/i }));
@@ -63,27 +71,30 @@ test('clicking Download calls getSelectedCards', async () => {
   const user = userEvent.setup();
 
   render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   await user.click(screen.getByRole('button', { name: /download/i }));
-
-  expect(mockGetSelectedCards).toHaveBeenCalled();
+  expect(fetchSelectedCharacters).toHaveBeenCalled();
 });
 
 test('flyout hidden when no items selected', () => {
   vi.mocked(useCheckboxStore).mockImplementation(makeMockStore([]));
 
   const { container } = render(
-    <ThemeProvider>
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    </ThemeProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <ThemeProvider>
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 
   const flyoutPanel = container.querySelector('.check-buttons-close');

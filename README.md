@@ -81,7 +81,7 @@ This is a modern React application created as part of the [RS School](https://rs
 ### 🧪 Тестирование
 
 - **Запуск тестов**: `npm run test`
-- **Проверка покрытия**: `npm run test:coverage` (**Текущее покрытие: ~97%**)
+- **Проверка покрытия**: `npm run test:coverage` (**Текущее покрытие: ~95%**)
 - **Линтинг**: `npm run lint`
 
 ---
