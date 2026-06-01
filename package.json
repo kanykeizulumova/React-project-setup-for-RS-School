@@ -29,6 +29,7 @@
     "immer": "^11.1.8",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
+    "react-hook-form": "^7.77.0",
     "react-router": "^7.15.0",
     "zustand": "^5.0.13"
   },
