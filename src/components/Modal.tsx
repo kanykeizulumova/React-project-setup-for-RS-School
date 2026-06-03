@@ -1,8 +1,14 @@
 import ReactDOM from 'react-dom';
-import { useEffect } from 'react';
+import React, { useEffect, cloneElement, isValidElement } from 'react';
 import { formsMap } from '../formsMap';
 
-export default function Modal({ isOpen, onClose, activeForm }) {
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  activeForm: keyof typeof formsMap | string;
+}
+
+export default function Modal({ isOpen, onClose, activeForm }: ModalProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -21,6 +27,8 @@ export default function Modal({ isOpen, onClose, activeForm }) {
 
   if (!isOpen) return null;
 
+  const currentForm = formsMap[activeForm as keyof typeof formsMap];
+
   return ReactDOM.createPortal(
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className="modal" onClick={onClose}>
@@ -31,10 +39,17 @@ export default function Modal({ isOpen, onClose, activeForm }) {
         </button>
 
         <div className="form-container">
-          {formsMap[activeForm] || <p>Form not found</p>}
+          {isValidElement(currentForm) ? (
+            cloneElement(
+              currentForm as React.ReactElement<{ onClose: () => void }>,
+              { onClose }
+            )
+          ) : (
+            <p>Form not found</p>
+          )}
         </div>
       </div>
     </div>,
-    document.getElementById('modal-root')
+    document.getElementById('modal-root') as HTMLElement
   );
 }
