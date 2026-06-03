@@ -1,6 +1,5 @@
 import useUserStore from './store/useUserStore';
 
-// eslint-disable-next-line react/require-default-props
 export default function UncontrolledFrom({
   onClose,
 }: {

@@ -54,6 +54,7 @@ export default [
       'import/extensions': 'off', // Иногда конфликтует с TS в редакторе
       'react/prefer-stateless-function': 'off', // Позволяет классовые компоненты без стейта
       'react/prop-types': 'off', // Отключаем prop-types, так как используется TypeScript
+      'react/require-default-props': 'off', // В TypeScript defaultProps не обязательны
     },
     settings: {
       react: {

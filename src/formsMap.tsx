@@ -1,4 +1,4 @@
-import Form from './form';
+import Form from './UncontrolledFrom';
 
 export const FORMS = {
   UNCONTROLLED: 'UNCONTROLLED',
