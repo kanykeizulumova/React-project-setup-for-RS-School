@@ -61,7 +61,13 @@ export default function Terms() {
         Fusce dapibus diam nec tempus elementum.
       </p>
       <br />
-      <Link id="backtobtn" to="/">
+      <Link
+        id="backtobtn"
+        to="/"
+        style={{
+          color: 'red',
+        }}
+      >
         {' '}
         ⬅️
         <br />I have read all the terms and conditions and want to return to the
