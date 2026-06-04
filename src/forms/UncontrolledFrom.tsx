@@ -1,4 +1,6 @@
-import useUserStore from './store/useUserStore';
+import useUserStore from '../store/useUserStore';
+import convertFileToBase64 from '../hooks/convertFileToBase64';
+import handleFileChange from '../hooks/handleFileChange';
 
 export default function UncontrolledFrom({
   onClose,
@@ -7,20 +9,27 @@ export default function UncontrolledFrom({
 }) {
   const addUser = useUserStore((state) => state.addUser);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
     const fullName = data.fullName as string;
     const email = data.email as string;
+    const imageEntry = formData.get('image');
+
+    let base64String: string | undefined;
+    if (imageEntry instanceof File && imageEntry.size > 0) {
+      base64String = await convertFileToBase64(imageEntry);
+    }
 
     if (!fullName?.trim() || !email?.trim()) return;
 
-    addUser(data);
-
-    event.currentTarget.reset();
+    addUser({ ...data, image: base64String });
+    form.reset();
 
     if (onClose) {
       onClose();
@@ -43,6 +52,7 @@ export default function UncontrolledFrom({
         Your age:{' '}
         <input type="number" name="age" placeholder="Enter Your Age" required />
       </label>
+
       <label htmlFor="email">
         Enter Email:
         <input
@@ -62,17 +72,36 @@ export default function UncontrolledFrom({
         Female
       </label>
 
+      <label htmlFor="password">
+        Password
+        <input name="password" type="password" required />
+      </label>
+
+      <label htmlFor="confirmPassword">
+        Confirm Password
+        <input name="confirmPassword" type="password" required />
+      </label>
+
+      <label htmlFor="image">
+        Upload image:
+        <input
+          name="image"
+          type="file"
+          onChange={(e) => {
+            handleFileChange(e);
+          }}
+          placeholder="Upload your image"
+        />
+      </label>
+
       <label
         htmlFor="terms"
         style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
       >
-        <input type="checkbox" name="terms" />
-        <span>
-          i agree to{' '}
-          <a href="/terms" target="_blank" rel="noopener noreferrer">
-            the terms of use and privacy
-          </a>
-        </span>
+        <input type="checkbox" name="terms" id="terms" />i agree to{' '}
+        <a href="/terms" target="_blank" rel="noopener noreferrer">
+          the terms of use and privacy
+        </a>
       </label>
       <button type="submit">Submit</button>
     </form>
