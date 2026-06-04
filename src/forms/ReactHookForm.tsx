@@ -1,7 +1,6 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
-import handleFileChange from '../hooks/handleFileChange';
 
 interface IFormInput {
   fullName: string;
@@ -89,7 +88,8 @@ export default function ReactHookForm({ onClose }) {
       <label htmlFor="gender-input">
         Gender:
         <input
-          id="gender-input"
+          id="gender-male"
+          name="gender"
           type="radio"
           value="male"
           onChange={genderReg.onChange}
@@ -99,7 +99,8 @@ export default function ReactHookForm({ onClose }) {
         />{' '}
         Male
         <input
-          id="gender-input"
+          id="gender-female"
+          name="gender"
           type="radio"
           value="female"
           onChange={genderReg.onChange}
@@ -140,10 +141,7 @@ export default function ReactHookForm({ onClose }) {
           id="userFiles"
           type="file"
           name={imageReg.name}
-          onChange={(e) => {
-            imageReg.onChange(e);
-            handleFileChange(e);
-          }}
+          onChange={imageReg.onChange}
           onBlur={imageReg.onBlur}
           ref={(element) => imageReg.ref(element)}
           placeholder="Upload your image"
@@ -157,6 +155,7 @@ export default function ReactHookForm({ onClose }) {
         <input
           id="terms-input"
           type="checkbox"
+          name="terms"
           onChange={termsReg.onChange}
           onBlur={termsReg.onBlur}
           ref={(element) => termsReg.ref(element)}
