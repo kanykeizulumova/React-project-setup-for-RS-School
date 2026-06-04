@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import React, { useEffect, cloneElement, isValidElement } from 'react';
+import { useEffect } from 'react';
 import { formsMap } from '../formsMap';
 
 interface ModalProps {
@@ -27,23 +27,22 @@ export default function Modal({ isOpen, onClose, activeForm }: ModalProps) {
 
   if (!isOpen) return null;
 
-  const currentForm = formsMap[activeForm as keyof typeof formsMap];
+  const FormComponent = formsMap[activeForm as keyof typeof formsMap];
 
   return ReactDOM.createPortal(
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-    <div className="modal" onClick={onClose}>
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal" onClick={onClose} role="presentation">
+      <div
+        className="modal-content"
+        onClick={(e) => e.stopPropagation()}
+        role="presentation"
+      >
         <button type="button" className="modal-close" onClick={onClose}>
           &times;
         </button>
 
         <div className="form-container">
-          {isValidElement(currentForm) ? (
-            cloneElement(
-              currentForm as React.ReactElement<{ onClose: () => void }>,
-              { onClose }
-            )
+          {FormComponent ? (
+            <FormComponent onClose={onClose} />
           ) : (
             <p>Form not found</p>
           )}
