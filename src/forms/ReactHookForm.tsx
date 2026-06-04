@@ -1,6 +1,7 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import type { ChangeEvent } from 'react';
 import useUserStore from '../store/useUserStore';
+import convertFileToBase64 from '../hooks/convertFileToBase64';
+import handleFileChange from '../hooks/handleFileChange';
 
 interface IFormInput {
   fullName: string;
@@ -10,6 +11,7 @@ interface IFormInput {
   terms: boolean;
   image: FileList;
   password: string;
+  confirmPassword: string;
   country: string;
 }
 
@@ -17,20 +19,6 @@ export default function ReactHookForm({ onClose }) {
   const addUser = useUserStore((state) => state.addUser);
 
   const { register, handleSubmit, reset } = useForm<IFormInput>();
-
-  const convertFileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      reader.onload = () => {
-        const result = reader.result as string;
-        const base64String = result.split(',')[1];
-        resolve(base64String);
-      };
-
-      reader.onerror = (error) => reject(error);
-    });
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     try {
@@ -48,18 +36,6 @@ export default function ReactHookForm({ onClose }) {
     }
   };
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const { files } = event.target;
-    if (files && files.length > 0) {
-      try {
-        const base64Result = await convertFileToBase64(files[0]);
-        console.log('Base64 String:', base64Result);
-      } catch (error) {
-        console.error('Conversion failed:', error);
-      }
-    }
-  };
-
   const nameReg = register('fullName');
   const ageReg = register('age');
   const emailReg = register('email');
@@ -67,6 +43,7 @@ export default function ReactHookForm({ onClose }) {
   const termsReg = register('terms');
   const imageReg = register('image');
   const passwordReg = register('password');
+  const confirmPasswordReg = register('confirmPassword');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="modal-form">
@@ -150,9 +127,9 @@ export default function ReactHookForm({ onClose }) {
         <input
           id="confirmPassword"
           type="password"
-          onChange={passwordReg.onChange}
-          onBlur={passwordReg.onBlur}
-          ref={(element) => passwordReg.ref(element)}
+          onChange={confirmPasswordReg.onChange}
+          onBlur={confirmPasswordReg.onBlur}
+          ref={(element) => confirmPasswordReg.ref(element)}
           required
         />
       </label>
