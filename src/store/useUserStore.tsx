@@ -13,6 +13,9 @@ interface NewUser {
   age?: number;
   gender?: string;
   terms?: boolean;
+  image?: string;
+  password?: string;
+  country?: string;
 }
 
 const useUserStore = create<UserStore>()(
