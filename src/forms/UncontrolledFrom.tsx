@@ -1,6 +1,5 @@
 import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
-import handleFileChange from '../hooks/handleFileChange';
 
 export default function UncontrolledFrom({
   onClose,
@@ -84,14 +83,7 @@ export default function UncontrolledFrom({
 
       <label htmlFor="image">
         Upload image:
-        <input
-          name="image"
-          type="file"
-          onChange={(e) => {
-            handleFileChange(e);
-          }}
-          placeholder="Upload your image"
-        />
+        <input name="image" type="file" placeholder="Upload your image" />
       </label>
 
       <label
