@@ -1,5 +1,5 @@
-import UncontrolledFrom from './UncontrolledFrom';
-import ReactHookForm from './ReactHookForm';
+import UncontrolledFrom from './forms/UncontrolledFrom';
+import ReactHookForm from './forms/ReactHookForm';
 
 export const FORMS = {
   UNCONTROLLED: 'UNCONTROLLED',
@@ -8,5 +8,5 @@ export const FORMS = {
 
 export const formsMap = {
   [FORMS.UNCONTROLLED]: <UncontrolledFrom />,
-  [FORMS.RHF]: <ReactHookForm />,
+  [FORMS.RHF]: <ReactHookForm onClose={undefined} />,
 };

@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import type { ChangeEvent } from 'react';
-import useUserStore from './store/useUserStore';
+import useUserStore from '../store/useUserStore';
 
 interface IFormInput {
   fullName: string;
@@ -9,6 +9,8 @@ interface IFormInput {
   email: string;
   terms: boolean;
   image: FileList;
+  password: string;
+  country: string;
 }
 
 export default function ReactHookForm({ onClose }) {
@@ -64,6 +66,7 @@ export default function ReactHookForm({ onClose }) {
   const genderReg = register('gender');
   const termsReg = register('terms');
   const imageReg = register('image');
+  const passwordReg = register('password');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="modal-form">
@@ -128,6 +131,30 @@ export default function ReactHookForm({ onClose }) {
           required
         />{' '}
         Female
+      </label>
+
+      <label htmlFor="password-input">
+        Password
+        <input
+          id="password-input"
+          type="password"
+          onChange={passwordReg.onChange}
+          onBlur={passwordReg.onBlur}
+          ref={(element) => passwordReg.ref(element)}
+          required
+        />
+      </label>
+
+      <label htmlFor="confirmPassword">
+        Confirm Password
+        <input
+          id="confirmPassword"
+          type="password"
+          onChange={passwordReg.onChange}
+          onBlur={passwordReg.onBlur}
+          ref={(element) => passwordReg.ref(element)}
+          required
+        />
       </label>
 
       <label htmlFor="userFiles">
