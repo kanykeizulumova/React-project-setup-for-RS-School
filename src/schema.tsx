@@ -66,10 +66,12 @@ const schema = yup
 
     confirmPassword: yup
       .string()
-      .oneOf([yup.ref('password')], 'Password must match')
-      .defined()
-      .nonNullable()
-      .required('Repeat password'),
+      .required('Repeat password')
+      .test('passwords-match', 'Password must match', function (value) {
+        if (!value) return true;
+
+        return value === this.parent.password;
+      }),
 
     country: yup.string().defined().required(),
   })
