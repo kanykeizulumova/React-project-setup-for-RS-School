@@ -1,19 +1,31 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useState } from 'react';
 import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
 import schema from '../schema';
+import { checkPasswordStrength } from '../checkPasswordStrength';
 
 export type IFormInput = yup.InferType<typeof schema>;
 
 export default function ReactHookForm({ onClose }: { onClose: () => void }) {
   const addUser = useUserStore((state) => state.addUser);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const strength = checkPasswordStrength(currentPassword);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const {
     register,
     handleSubmit,
     reset,
+    trigger,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -23,8 +35,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
   const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
     try {
       let base64String: string | undefined;
-
-      if (data.image && data.image.size > 0) {
+      if (data.image instanceof FileList && data.image.length > 0) {
         base64String = await convertFileToBase64(data.image[0]);
       }
 
@@ -42,8 +53,10 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
   const genderReg = register('gender');
   const termsReg = register('terms');
   const imageReg = register('image');
-  const passwordReg = register('password');
-  const confirmPasswordReg = register('confirmPassword');
+  const passwordReg = register('password', { deps: ['confirmPassword'] });
+  const confirmPasswordReg = register('confirmPassword', {
+    deps: ['password'],
+  });
   const countryReg = register('country');
 
   return (
@@ -122,13 +135,84 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
         Password
         <input
           id="password-input"
-          type="password"
-          onChange={passwordReg.onChange}
+          type={showPassword ? 'text' : 'password'}
+          onChange={(e) => {
+            const { value } = e.target;
+            setValue('password', value);
+            setCurrentPassword(value);
+            trigger(['password', 'confirmPassword']);
+          }}
           onBlur={passwordReg.onBlur}
           ref={(element) => passwordReg.ref(element)}
           required
         />
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          {showPassword ? (
+            <svg
+              viewBox="0 0 24 24"
+              width="1em"
+              height="1em"
+              className="icon__1Md2"
+            >
+              <path
+                fillRule="evenodd"
+                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+              />
+            </svg>
+          ) : (
+            <svg
+              viewBox="0 0 24 24"
+              width="1em"
+              height="1em"
+              className="icon__1Md2"
+            >
+              <path
+                fillRule="evenodd"
+                d="M7.119 14.563L5.982 16.53l-1.732-1 1.301-2.253A8.97 8.97 0 0 1 3 7h2a7 7 0 0 0 14 0h2a8.973 8.973 0 0 1-2.72 6.448l1.202 2.083-1.732 1-1.065-1.845A8.944 8.944 0 0 1 13 15.946V18h-2v-2.055a8.946 8.946 0 0 1-3.881-1.382z"
+              />
+            </svg>
+          )}
+        </button>
         {errors.password && <p>{errors.password.message}</p>}
+        {currentPassword && (
+          <div style={{ marginTop: '8px' }}>
+            <div
+              style={{
+                height: '6px',
+                width: '100%',
+                backgroundColor: '#e0e0e0',
+                borderRadius: '3px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  height: '100%',
+                  width: `${(strength.score / 5) * 100}%`,
+                  backgroundColor: strength.color,
+                  transition: 'width 0.3s ease, background-color 0.3s ease',
+                }}
+              />
+            </div>
+            <span
+              style={{
+                fontSize: '12px',
+                color: strength.color,
+                fontWeight: 'bold',
+              }}
+            >
+              Strength: {strength.label}
+            </span>
+          </div>
+        )}
       </label>
 
       <label htmlFor="confirmPassword">
@@ -136,7 +220,10 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
         <input
           id="confirmPassword"
           type="password"
-          onChange={confirmPasswordReg.onChange}
+          onChange={(e) => {
+            setValue('confirmPassword', e.target.value);
+            trigger(['password', 'confirmPassword']);
+          }}
           onBlur={confirmPasswordReg.onBlur}
           ref={(element) => confirmPasswordReg.ref(element)}
           required
