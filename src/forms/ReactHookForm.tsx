@@ -6,11 +6,13 @@ import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
 import schema from '../schema';
 import { checkPasswordStrength } from '../checkPasswordStrength';
+import useCountryStore from '../store/useCountryStore';
 
 export type IFormInput = yup.InferType<typeof schema>;
 
 export default function ReactHookForm({ onClose }: { onClose: () => void }) {
   const addUser = useUserStore((state) => state.addUser);
+  const countries = useCountryStore((state) => state.countries);
 
   const [showPassword, setShowPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -26,7 +28,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
     reset,
     trigger,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -135,6 +137,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
         Password
         <input
           id="password-input"
+          name={passwordReg.name}
           type={showPassword ? 'text' : 'password'}
           onChange={(e) => {
             const { value } = e.target;
@@ -220,6 +223,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
         <input
           id="confirmPassword"
           type="password"
+          name={confirmPasswordReg.name}
           onChange={(e) => {
             setValue('confirmPassword', e.target.value);
             trigger(['password', 'confirmPassword']);
@@ -247,18 +251,24 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
 
       <label htmlFor="country-input">
         Country:
-        <select
+        <input
           id="country-input"
+          type="text"
+          list="countries-list"
           name={countryReg.name}
           onChange={countryReg.onChange}
           onBlur={countryReg.onBlur}
           ref={(element) => countryReg.ref(element)}
+          placeholder="Type to search country..."
           required
-        >
-          <option value="">Select a country</option>
-          <option value="US">USA</option>
-          <option value="KZ">Kazakhstan</option>
-        </select>
+        />
+        <datalist id="countries-list">
+          {countries.map((country) => (
+            <option key={country.code} value={country.name}>
+              {country.name}
+            </option>
+          ))}
+        </datalist>
         {errors.country && <p>{errors.country.message}</p>}
       </label>
 
@@ -283,7 +293,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
         </span>
       </label>
 
-      <button type="submit">Submit</button>
+      <button type="submit" disabled={!isValid}>
+        Submit
+      </button>
     </form>
   );
 }
