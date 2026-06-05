@@ -1,29 +1,30 @@
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
+import schema from '../schema';
 
-interface IFormInput {
-  fullName: string;
-  age: number;
-  gender: string;
-  email: string;
-  terms: boolean;
-  image: FileList;
-  password: string;
-  confirmPassword: string;
-  country: string;
-}
+export type IFormInput = yup.InferType<typeof schema>;
 
-export default function ReactHookForm({ onClose }) {
+export default function ReactHookForm({ onClose }: { onClose: () => void }) {
   const addUser = useUserStore((state) => state.addUser);
 
-  const { register, handleSubmit, reset } = useForm<IFormInput>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<IFormInput> = async (data: IFormInput) => {
     try {
       let base64String: string | undefined;
 
-      if (data.image && data.image.length > 0) {
+      if (data.image && data.image.size > 0) {
         base64String = await convertFileToBase64(data.image[0]);
       }
 
@@ -43,6 +44,7 @@ export default function ReactHookForm({ onClose }) {
   const imageReg = register('image');
   const passwordReg = register('password');
   const confirmPasswordReg = register('confirmPassword');
+  const countryReg = register('country');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="modal-form">
@@ -57,6 +59,7 @@ export default function ReactHookForm({ onClose }) {
           placeholder="Enter Your Full Name"
           required
         />
+        {errors.fullName && <p>{errors.fullName.message}</p>}
       </label>
 
       <label htmlFor="age-input">
@@ -70,6 +73,7 @@ export default function ReactHookForm({ onClose }) {
           placeholder="Enter Your Age"
           required
         />
+        {errors.age && <p>{errors.age.message}</p>}
       </label>
 
       <label htmlFor="email-input">
@@ -83,6 +87,7 @@ export default function ReactHookForm({ onClose }) {
           placeholder="Enter email"
           required
         />
+        {errors.email && <p>{errors.email.message}</p>}
       </label>
 
       <label htmlFor="gender-input">
@@ -98,6 +103,7 @@ export default function ReactHookForm({ onClose }) {
           required
         />{' '}
         Male
+        {errors.gender && <p>{errors.gender.message}</p>}
         <input
           id="gender-female"
           name="gender"
@@ -109,6 +115,7 @@ export default function ReactHookForm({ onClose }) {
           required
         />{' '}
         Female
+        {errors.gender && <p>{errors.gender.message}</p>}
       </label>
 
       <label htmlFor="password-input">
@@ -121,6 +128,7 @@ export default function ReactHookForm({ onClose }) {
           ref={(element) => passwordReg.ref(element)}
           required
         />
+        {errors.password && <p>{errors.password.message}</p>}
       </label>
 
       <label htmlFor="confirmPassword">
@@ -133,6 +141,7 @@ export default function ReactHookForm({ onClose }) {
           ref={(element) => confirmPasswordReg.ref(element)}
           required
         />
+        {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
       </label>
 
       <label htmlFor="userFiles">
@@ -146,6 +155,24 @@ export default function ReactHookForm({ onClose }) {
           ref={(element) => imageReg.ref(element)}
           placeholder="Upload your image"
         />
+        {errors.image && <p>{errors.image.message}</p>}
+      </label>
+
+      <label htmlFor="country-input">
+        Country:
+        <select
+          id="country-input"
+          name={countryReg.name}
+          onChange={countryReg.onChange}
+          onBlur={countryReg.onBlur}
+          ref={(element) => countryReg.ref(element)}
+          required
+        >
+          <option value="">Select a country</option>
+          <option value="US">USA</option>
+          <option value="KZ">Kazakhstan</option>
+        </select>
+        {errors.country && <p>{errors.country.message}</p>}
       </label>
 
       <label
@@ -160,6 +187,7 @@ export default function ReactHookForm({ onClose }) {
           onBlur={termsReg.onBlur}
           ref={(element) => termsReg.ref(element)}
         />
+        {errors.terms && <p>{errors.terms.message}</p>}
         <span>
           i agree to{' '}
           <a href="/terms" target="_blank" rel="noopener noreferrer">
