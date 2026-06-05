@@ -20,9 +20,24 @@ const schema = yup
 
     email: yup
       .string()
-      .email('Incorrect email format')
       .defined()
-      .required('Email is required'),
+      .required('Email is required')
+      .test('custom-email-validation', 'Incorrect email format', (value) => {
+        if (!value) return false;
+
+        const parts = value.split('@');
+        if (parts.length !== 2) return false;
+
+        const localPart = parts[0];
+        const domainPart = parts[1];
+
+        if (localPart.trim().length === 0) return false;
+
+        if (!domainPart.includes('.')) return false;
+
+        const domainSubParts = domainPart.split('.');
+        return domainSubParts.every((subPart) => subPart.trim().length > 0);
+      }),
 
     gender: yup
       .string<'male' | 'female'>()
