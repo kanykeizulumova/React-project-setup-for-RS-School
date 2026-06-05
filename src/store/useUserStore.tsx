@@ -23,7 +23,7 @@ const useUserStore = create<UserStore>()(
     (set) => ({
       users: [],
 
-      addUser: (newUser: NewUser | undefined) =>
+      addUser: (newUser?: Partial<Omit<NewUser, 'id'>>) =>
         set((state) => ({
           users: [...state.users, { ...(newUser ?? {}), id: Date.now() }],
         })),
