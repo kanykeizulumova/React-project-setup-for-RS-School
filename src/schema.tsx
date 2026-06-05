@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import useCountryStore from './store/useCountryStore';
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const SUPPORTED_FORMATS = ['image/jpeg', 'image/png'];
@@ -73,7 +74,18 @@ const schema = yup
         return value === this.parent.password;
       }),
 
-    country: yup.string().defined().required(),
+    country: yup
+      .string()
+      .defined()
+      .required()
+      .test(
+        'valid-country',
+        'Please select a country from the list',
+        (value) => {
+          const { countries } = useCountryStore.getState();
+          return countries.some((c) => c.name === value);
+        }
+      ),
   })
   .required();
 
