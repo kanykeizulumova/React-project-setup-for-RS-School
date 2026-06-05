@@ -5,7 +5,7 @@ import { useState } from 'react';
 import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
 import schema from '../schema';
-import { checkPasswordStrength } from '../checkPasswordStrength';
+import checkPasswordStrength from '../checkPasswordStrength';
 import useCountryStore from '../store/useCountryStore';
 
 export type IFormInput = yup.InferType<typeof schema>;
