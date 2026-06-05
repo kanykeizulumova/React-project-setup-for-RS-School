@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/jpg', 'image/png'];
+const SUPPORTED_FORMATS = ['image/jpeg', 'image/png'];
 
 const schema = yup
   .object({
@@ -32,21 +32,27 @@ const schema = yup
     terms: yup.boolean().defined().required(),
 
     image: yup
-      .mixed<File>()
-
+      .mixed()
+      .required('An image is required')
       .test(
-        'fileSize',
-        'File size is too large (max 2MB)',
-        (value) => value && value.size <= MAX_FILE_SIZE
+        'fileRequired',
+        'Please upload your photo',
+        (value) => value instanceof FileList && value.length > 0
       )
-
+      .test('fileSize', 'File size is too large (max 2MB)', (value) => {
+        if (!(value instanceof FileList) || value.length === 0) return false;
+        const file = value[0];
+        return file.size <= MAX_FILE_SIZE;
+      })
       .test(
         'fileType',
-        'Unsupported file format',
-        (value) => value && SUPPORTED_FORMATS.includes(value.type)
-      )
-      .defined()
-      .required('An image is required'),
+        'Unsupported file format (allowed JPEG, PNG)',
+        (value) => {
+          if (!(value instanceof FileList) || value.length === 0) return false;
+          const file = value[0];
+          return SUPPORTED_FORMATS.includes(file.type);
+        }
+      ),
 
     password: yup
       .string()
