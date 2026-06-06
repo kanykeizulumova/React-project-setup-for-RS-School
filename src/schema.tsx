@@ -45,7 +45,7 @@ const schema = yup
       .defined()
       .required('Gender selection is required'),
 
-    terms: yup.boolean().defined().required(),
+    terms: yup.boolean().oneOf([true]),
 
     image: yup
       .mixed()
@@ -83,11 +83,15 @@ const schema = yup
     confirmPassword: yup
       .string()
       .required('Repeat password')
-      .test('passwords-match', 'Password must match', function (value) {
-        if (!value) return true;
+      .test(
+        'passwords-match',
+        'Password must match',
+        function checkPasswordsMatch(value) {
+          if (!value) return true;
 
-        return value === this.parent.password;
-      }),
+          return value === this.parent.password;
+        }
+      ),
 
     country: yup
       .string()
