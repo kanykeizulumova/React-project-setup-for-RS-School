@@ -135,55 +135,57 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
 
       <label htmlFor="password-input">
         Password
-        <input
-          id="password-input"
-          name={passwordReg.name}
-          type={showPassword ? 'text' : 'password'}
-          onChange={(e) => {
-            const { value } = e.target;
-            setValue('password', value);
-            setCurrentPassword(value);
-            trigger(['password', 'confirmPassword']);
-          }}
-          onBlur={passwordReg.onBlur}
-          ref={(element) => passwordReg.ref(element)}
-          required
-        />
-        <button
-          type="button"
-          onClick={togglePasswordVisibility}
-          style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-          }}
-        >
-          {showPassword ? (
-            <svg
-              viewBox="0 0 24 24"
-              width="1em"
-              height="1em"
-              className="icon__1Md2"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
-              />
-            </svg>
-          ) : (
-            <svg
-              viewBox="0 0 24 24"
-              width="1em"
-              height="1em"
-              className="icon__1Md2"
-            >
-              <path
-                fillRule="evenodd"
-                d="M7.119 14.563L5.982 16.53l-1.732-1 1.301-2.253A8.97 8.97 0 0 1 3 7h2a7 7 0 0 0 14 0h2a8.973 8.973 0 0 1-2.72 6.448l1.202 2.083-1.732 1-1.065-1.845A8.944 8.944 0 0 1 13 15.946V18h-2v-2.055a8.946 8.946 0 0 1-3.881-1.382z"
-              />
-            </svg>
-          )}
-        </button>
+        <div style={{ position: 'relative', width: '100%' }}>
+          <input
+            id="password-input"
+            name={passwordReg.name}
+            type={showPassword ? 'text' : 'password'}
+            onChange={(e) => {
+              const { value } = e.target;
+              setValue('password', value);
+              setCurrentPassword(value);
+              trigger(['password', 'confirmPassword']);
+            }}
+            onBlur={passwordReg.onBlur}
+            ref={(element) => passwordReg.ref(element)}
+            required
+          />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            {showPassword ? (
+              <svg
+                viewBox="0 0 24 24"
+                width="1em"
+                height="1em"
+                className="icon__1Md2"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                />
+              </svg>
+            ) : (
+              <svg
+                viewBox="0 0 24 24"
+                width="1em"
+                height="1em"
+                className="icon__1Md2"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M7.119 14.563L5.982 16.53l-1.732-1 1.301-2.253A8.97 8.97 0 0 1 3 7h2a7 7 0 0 0 14 0h2a8.973 8.973 0 0 1-2.72 6.448l1.202 2.083-1.732 1-1.065-1.845A8.944 8.944 0 0 1 13 15.946V18h-2v-2.055a8.946 8.946 0 0 1-3.881-1.382z"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
         {errors.password && <p>{errors.password.message}</p>}
         {currentPassword && (
           <div style={{ marginTop: '8px' }}>
