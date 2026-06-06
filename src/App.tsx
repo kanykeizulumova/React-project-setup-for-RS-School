@@ -10,7 +10,7 @@ const App = () => {
   const [shouldThrow, setShouldThrow] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentForm, setCurrentForm] = useState(null);
+  const [currentForm, setCurrentForm] = useState<string>('');
   const users = useUserStore((state) => state.users);
   const removeUser = useUserStore((state) => state.removeUser);
 
@@ -76,11 +76,19 @@ const App = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <div>
+                  <div className="userCard">
+                    <div className="avatar">
+                      <img
+                        src={`data:image/png;base64,${user.image}`}
+                        alt="Users avatar"
+                        style={{ width: 100, height: 100 }}
+                      />
+                    </div>
                     <strong>Full Name: {user.fullName}</strong>
                     <div>Email: {user.email}</div>
                     <div>Age: {user.age}</div>
                     <div>Gender: {user.gender}</div>
+                    <div>Country: {user.country}</div>
                     <div>
                       I {user.terms ? 'agree ' : 'do not agree'} to the terms of
                       use and privacy
