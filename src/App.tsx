@@ -79,7 +79,7 @@ const App = () => {
                   <div className="userCard">
                     <div className="avatar">
                       <img
-                        src={`data:image/png;base64,${user.image}`}
+                        src={user.image}
                         alt="Users avatar"
                         style={{ width: 100, height: 100 }}
                       />

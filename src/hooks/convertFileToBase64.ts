@@ -5,8 +5,7 @@ const convertFileToBase64 = (file: File): Promise<string> =>
 
     reader.onload = () => {
       const result = reader.result as string;
-      const base64String = result.split(',')[1];
-      resolve(base64String);
+      resolve(result);
     };
 
     reader.onerror = (error) => reject(error);
