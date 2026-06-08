@@ -270,7 +270,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
         <input
           id="country-input"
           type="text"
-          list="countries-list"
+          list="countries-list-hook-form"
           name={countryReg.name}
           onChange={countryReg.onChange}
           onBlur={countryReg.onBlur}
@@ -278,7 +278,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           placeholder="Type to search country..."
           required
         />
-        <datalist id="countries-list">
+        <datalist id="countries-list-hook-form">
           {countries.map((country) => (
             <option key={country.code} value={country.name}>
               {country.name}
