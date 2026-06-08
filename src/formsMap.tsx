@@ -1,4 +1,4 @@
-import UncontrolledFrom from './forms/UncontrolledFrom';
+import UncontrolledFrom from './forms/UncontrolledForm';
 import ReactHookForm from './forms/ReactHookForm';
 
 export const FORMS = {

@@ -6,7 +6,7 @@ import schema from '../schema';
 import useCountryStore from '../store/useCountryStore';
 import checkPasswordStrength from '../checkPasswordStrength';
 
-export default function UncontrolledFrom({
+export default function UncontrolledForm({
   onClose,
 }: {
   onClose?: () => void;
@@ -16,7 +16,11 @@ export default function UncontrolledFrom({
 
   const [showPassword, setShowPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const strength = checkPasswordStrength(currentPassword);
+
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -25,18 +29,13 @@ export default function UncontrolledFrom({
     event.preventDefault();
 
     const form = event.currentTarget;
-
-    form.querySelectorAll('.error-message').forEach((el) => {
-      // eslint-disable-next-line no-param-reassign
-      el.textContent = '';
-    });
     const formData = new FormData(form);
 
-    const data: Record<string, unknown> = {
+    const data = {
       ...Object.fromEntries(formData.entries()),
       terms: (form.elements.namedItem('terms') as HTMLInputElement).checked,
       image: (form.elements.namedItem('image') as HTMLInputElement).files,
-    };
+    } as yup.InferType<typeof schema>;
 
     const imageEntry = formData.get('image');
 
@@ -46,21 +45,12 @@ export default function UncontrolledFrom({
     }
 
     try {
+      setErrors({});
+
       const validData = await schema.validate(data, { abortEarly: false });
 
-      const passwordStrengthAtSubmit = checkPasswordStrength(
-        String(data.password)
-      );
-
-      if (passwordStrengthAtSubmit.score < 4) {
-        const errorElement = form.querySelector('#error-password');
-        if (errorElement) {
-          errorElement.textContent = 'Password is too weak!';
-        }
-        return;
-      }
-
       addUser({ ...validData, image: base64String });
+
       form.reset();
       setCurrentPassword('');
 
@@ -69,12 +59,15 @@ export default function UncontrolledFrom({
       }
     } catch (err) {
       if (err instanceof yup.ValidationError) {
+        const newErrors: Record<string, string> = {};
+
         err.inner.forEach((error) => {
-          const errorElement = form.querySelector(`#error-${error.path}`);
-          if (errorElement) {
-            errorElement.textContent = error.message;
+          if (error.path) {
+            newErrors[error.path] = error.message;
           }
         });
+
+        setErrors(newErrors);
       }
     }
   }
@@ -95,7 +88,7 @@ export default function UncontrolledFrom({
           placeholder="Enter Your Full Name"
           required
         />
-        <p id="error-fullName" className="error-message" />
+        {errors.fullName && <p className="error-message">{errors.fullName}</p>}
       </label>
 
       <label htmlFor="age">
@@ -107,7 +100,7 @@ export default function UncontrolledFrom({
           placeholder="Enter Your Age"
           required
         />
-        <p id="error-age" className="error-message" />
+        {errors.age && <p className="error-message">{errors.age}</p>}
       </label>
 
       <label htmlFor="email">
@@ -119,7 +112,7 @@ export default function UncontrolledFrom({
           placeholder="Enter email"
           required
         />
-        <p id="error-email" className="error-message" />
+        {errors.email && <p className="error-message">{errors.email}</p>}
       </label>
 
       <div className="gender-group-container">
@@ -137,7 +130,7 @@ export default function UncontrolledFrom({
           <input type="radio" name="gender" value="female" id="female" /> Female
         </label>
 
-        <p id="error-gender" className="error-message" />
+        {errors.gender && <p className="error-message">{errors.gender}</p>}
       </div>
 
       <label htmlFor="password">
@@ -186,7 +179,7 @@ export default function UncontrolledFrom({
             )}
           </button>
         </div>
-        <p id="error-password" className="error-message" />
+        {errors.password && <p className="error-message">{errors.password}</p>}
         {currentPassword && (
           <div style={{ marginTop: '8px' }}>
             <div
@@ -228,7 +221,9 @@ export default function UncontrolledFrom({
           type="password"
           required
         />
-        <p id="error-confirmPassword" className="error-message" />
+        {errors.confirmPassword && (
+          <p className="error-message">{errors.confirmPassword}</p>
+        )}
       </label>
 
       <label htmlFor="image">
@@ -239,7 +234,7 @@ export default function UncontrolledFrom({
           type="file"
           placeholder="Upload your image"
         />
-        <p id="error-image" className="error-message" />
+        {errors.image && <p className="error-message">{errors.image}</p>}
       </label>
 
       <label htmlFor="country-input">
@@ -259,7 +254,7 @@ export default function UncontrolledFrom({
             </option>
           ))}
         </datalist>
-        <p id="error-country" className="error-message" />
+        {errors.country && <p className="error-message">{errors.country}</p>}
       </label>
 
       <label
@@ -270,8 +265,9 @@ export default function UncontrolledFrom({
         <a href="/terms" target="_blank" rel="noopener noreferrer">
           the terms of use and privacy
         </a>
-        <p id="error-terms" className="error-message" />
       </label>
+      {errors.terms && <p className="error-message">{errors.terms}</p>}
+
       <button type="submit">Submit</button>
     </form>
   );
