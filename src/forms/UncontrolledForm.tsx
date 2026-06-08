@@ -35,7 +35,7 @@ export default function UncontrolledForm({
       ...Object.fromEntries(formData.entries()),
       terms: (form.elements.namedItem('terms') as HTMLInputElement).checked,
       image: (form.elements.namedItem('image') as HTMLInputElement).files,
-    } as yup.InferType<typeof schema>;
+    } as unknown as yup.InferType<typeof schema>;
 
     const imageEntry = formData.get('image');
 
