@@ -73,19 +73,19 @@ export default function Modal({ isOpen, onClose, activeForm }: ModalProps) {
   return ReactDOM.createPortal(
     <div
       className="modal"
+      role="presentation"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();
         }
       }}
-      role="presentation"
-      aria-hidden="true"
     >
       <div
         className="modal-content"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
+        tabIndex={-1}
         ref={modalRef}
       >
         <button
