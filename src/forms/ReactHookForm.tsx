@@ -74,7 +74,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           placeholder="Enter Your Full Name"
           required
         />
-        {errors.fullName && <p>{errors.fullName.message}</p>}
+        {errors.fullName && (
+          <p className="error-message">{errors.fullName.message}</p>
+        )}
       </label>
 
       <label htmlFor="age-input">
@@ -88,7 +90,7 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           placeholder="Enter Your Age"
           required
         />
-        {errors.age && <p>{errors.age.message}</p>}
+        {errors.age && <p className="error-message">{errors.age.message}</p>}
       </label>
 
       <label htmlFor="email-input">
@@ -102,7 +104,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           placeholder="Enter email"
           required
         />
-        {errors.email && <p>{errors.email.message}</p>}
+        {errors.email && (
+          <p className="error-message">{errors.email.message}</p>
+        )}
       </label>
 
       <label htmlFor="gender-input">
@@ -118,7 +122,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           required
         />{' '}
         Male
-        {errors.gender && <p>{errors.gender.message}</p>}
+        {errors.gender && (
+          <p className="error-message">{errors.gender.message}</p>
+        )}
         <input
           id="gender-female"
           name="gender"
@@ -130,7 +136,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           required
         />{' '}
         Female
-        {errors.gender && <p>{errors.gender.message}</p>}
+        {errors.gender && (
+          <p className="error-message">{errors.gender.message}</p>
+        )}
       </label>
 
       <label htmlFor="password-input">
@@ -186,7 +194,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
             )}
           </button>
         </div>
-        {errors.password && <p>{errors.password.message}</p>}
+        {errors.password && (
+          <p className="error-message">{errors.password.message}</p>
+        )}
         {currentPassword && (
           <div style={{ marginTop: '8px' }}>
             <div
@@ -234,7 +244,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           ref={(element) => confirmPasswordReg.ref(element)}
           required
         />
-        {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
+        {errors.confirmPassword && (
+          <p className="error-message">{errors.confirmPassword.message}</p>
+        )}
       </label>
 
       <label htmlFor="userFiles">
@@ -248,7 +260,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           ref={(element) => imageReg.ref(element)}
           placeholder="Upload your image"
         />
-        {errors.image && <p>{errors.image.message}</p>}
+        {errors.image && (
+          <p className="error-message">{errors.image.message}</p>
+        )}
       </label>
 
       <label htmlFor="country-input">
@@ -271,7 +285,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
             </option>
           ))}
         </datalist>
-        {errors.country && <p>{errors.country.message}</p>}
+        {errors.country && (
+          <p className="error-message">{errors.country.message}</p>
+        )}
       </label>
 
       <label
@@ -286,7 +302,9 @@ export default function ReactHookForm({ onClose }: { onClose: () => void }) {
           onBlur={termsReg.onBlur}
           ref={(element) => termsReg.ref(element)}
         />
-        {errors.terms && <p>{errors.terms.message}</p>}
+        {errors.terms && (
+          <p className="error-message">{errors.terms.message}</p>
+        )}
         <span>
           i agree to{' '}
           <a href="/terms" target="_blank" rel="noopener noreferrer">
