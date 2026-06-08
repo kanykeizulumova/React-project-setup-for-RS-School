@@ -4,6 +4,7 @@ import useUserStore from '../store/useUserStore';
 import convertFileToBase64 from '../hooks/convertFileToBase64';
 import schema from '../schema';
 import useCountryStore from '../store/useCountryStore';
+import checkPasswordStrength from '../checkPasswordStrength';
 
 export default function UncontrolledFrom({
   onClose,
@@ -14,7 +15,8 @@ export default function UncontrolledFrom({
   const countries = useCountryStore((state) => state.countries);
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const [currentPassword, setCurrentPassword] = useState('');
+  const strength = checkPasswordStrength(currentPassword);
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
@@ -33,7 +35,7 @@ export default function UncontrolledFrom({
       ...Object.fromEntries(formData.entries()),
       terms: (form.elements.namedItem('terms') as HTMLInputElement).checked,
       image: (form.elements.namedItem('image') as HTMLInputElement).files,
-    };
+    } as yup.InferType<typeof schema>;
 
     const imageEntry = formData.get('image');
 
@@ -45,8 +47,21 @@ export default function UncontrolledFrom({
     try {
       const validData = await schema.validate(data, { abortEarly: false });
 
+      const passwordStrengthAtSubmit = checkPasswordStrength(
+        String(data.password)
+      );
+
+      if (passwordStrengthAtSubmit.score < 4) {
+        const errorElement = form.querySelector('#error-password');
+        if (errorElement) {
+          errorElement.textContent = 'Password is too weak!';
+        }
+        return;
+      }
+
       addUser({ ...validData, image: base64String });
       form.reset();
+      setCurrentPassword('');
 
       if (onClose) {
         onClose();
@@ -106,14 +121,23 @@ export default function UncontrolledFrom({
         <p id="error-email" className="error-message" />
       </label>
 
-      <label htmlFor="gender">
-        Gender:
-        <input type="radio" name="gender" value="male" id="male" />
-        Male
-        <input type="radio" name="gender" value="female" id="female" />
-        Female
+      <div className="gender-group-container">
+        <span
+          style={{ fontWeight: 'bold', display: 'block', marginBottom: '4px' }}
+        >
+          Gender:
+        </span>
+
+        <label htmlFor="male">
+          <input type="radio" name="gender" value="male" id="male" /> Male
+        </label>
+
+        <label htmlFor="female">
+          <input type="radio" name="gender" value="female" id="female" /> Female
+        </label>
+
         <p id="error-gender" className="error-message" />
-      </label>
+      </div>
 
       <label htmlFor="password">
         Password
@@ -122,6 +146,7 @@ export default function UncontrolledFrom({
             name="password"
             id="password"
             type={showPassword ? 'text' : 'password'}
+            onChange={(e) => setCurrentPassword(e.target.value)}
             required
           />
           <button
@@ -161,6 +186,37 @@ export default function UncontrolledFrom({
           </button>
         </div>
         <p id="error-password" className="error-message" />
+        {currentPassword && (
+          <div style={{ marginTop: '8px' }}>
+            <div
+              style={{
+                height: '6px',
+                width: '100%',
+                backgroundColor: '#e0e0e0',
+                borderRadius: '3px',
+                overflow: 'hidden',
+              }}
+            >
+              <div
+                style={{
+                  height: '100%',
+                  width: `${(strength.score / 5) * 100}%`,
+                  backgroundColor: strength.color,
+                  transition: 'width 0.3s ease, background-color 0.3s ease',
+                }}
+              />
+            </div>
+            <span
+              style={{
+                fontSize: '12px',
+                color: strength.color,
+                fontWeight: 'bold',
+              }}
+            >
+              Strength: {strength.label}
+            </span>
+          </div>
+        )}
       </label>
 
       <label htmlFor="confirmPassword">
