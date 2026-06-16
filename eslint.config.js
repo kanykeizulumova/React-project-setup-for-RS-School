@@ -28,7 +28,7 @@ export default [
     languageOptions: {
       parser: tsparser,
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ['./tsconfig.app.json'],
         tsconfigRootDir: __dirname,
       },
       globals: {

@@ -4,12 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run format && npm run lint && tsc -b && vite build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "dev": "next dev",
+    "build": "npm run format && npm run lint && next build",
+    "start": "next start",
     "lint": "eslint .",
-    "preview": "vite preview",
     "prepare": "husky",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
@@ -26,9 +24,10 @@
     ]
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.100.11",
+    "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-query-devtools": "^5.100.11",
     "immer": "^11.1.8",
+    "next": "15.0.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router": "^7.15.0",
