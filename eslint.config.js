@@ -20,7 +20,14 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['dist', 'node_modules', 'eslint.config.js', 'coverage'],
+    ignores: [
+      'dist',
+      'node_modules',
+      'eslint.config.js',
+      'coverage',
+      '.next',
+      'next.config.mjs',
+    ],
   },
   ...compat.extends('airbnb', 'airbnb-typescript'),
   {
@@ -28,7 +35,7 @@ export default [
     languageOptions: {
       parser: tsparser,
       parserOptions: {
-        project: ['./tsconfig.app.json'],
+        project: ['./tsconfig.json'],
         tsconfigRootDir: __dirname,
       },
       globals: {
