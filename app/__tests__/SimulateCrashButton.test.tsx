@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
-import { ThemeProvider } from '../ThemeContext';
+import { ThemeProvider } from '../lib/ThemeContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 test('Test the simulate crash button and check refresh button', async () => {

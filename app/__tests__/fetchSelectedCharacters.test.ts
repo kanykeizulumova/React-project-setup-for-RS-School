@@ -1,6 +1,6 @@
 import { vi, test, expect, afterEach } from 'vitest';
-import fetchSelectedCharacters from '../fetchSelectedCharacters';
-import FetchError from '../FetchError';
+import fetchSelectedCharacters from '../lib/fetchSelectedCharacters';
+import FetchError from '../lib/FetchError';
 
 afterEach(() => {
   vi.restoreAllMocks();

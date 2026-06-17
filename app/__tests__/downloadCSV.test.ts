@@ -1,4 +1,4 @@
-import downloadCSV from '../utils/downloadCSV';
+import downloadCSV from '../lib/downloadCSV';
 
 const mockData = [
   {

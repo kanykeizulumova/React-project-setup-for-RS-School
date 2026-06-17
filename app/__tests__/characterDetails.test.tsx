@@ -3,7 +3,7 @@ import { test, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import CharacterDetails from '../routes/CharacterDetails';
+import CharacterDetails from '../CharacterDetails';
 
 afterEach(() => {
   vi.restoreAllMocks();

@@ -1,5 +1,5 @@
-import Card from './Card.tsx';
-import type { CardProps } from './Card.tsx';
+import Card from './Card';
+import type { CardProps } from './Card';
 
 interface CardListProps {
   items: CardProps[];

@@ -1,6 +1,6 @@
-import { useNavigate, useSearchParams } from 'react-router';
-import '../App.css';
-import useCheckboxStore from '../store/useCheckbox.tsx';
+import { useRouter, useSearchParams } from 'next/navigation';
+import '../ui/App.css';
+import useCheckboxStore from './useCheckbox';
 
 export interface CardProps {
   id: string;
@@ -26,12 +26,13 @@ const Card = ({
     (state) => state.handleCheckboxChange
   );
 
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleCardClick = () => {
-    searchParams.set('details', id);
-    navigate(`/?${searchParams.toString()}`);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('details', id);
+    router.push(`/?${params.toString()}`);
   };
 
   return (

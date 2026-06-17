@@ -4,10 +4,10 @@ import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from '../App';
-import { ThemeProvider } from '../ThemeContext';
+import { ThemeProvider } from '../lib/ThemeContext';
 
 import useCheckboxStore, { type CheckboxStore } from '../store/useCheckbox';
-import fetchSelectedCharacters from '../fetchSelectedCharacters';
+import fetchSelectedCharacters from '../lib/fetchSelectedCharacters';
 
 vi.mock('../store/useCheckbox', () => ({
   default: vi.fn(),
