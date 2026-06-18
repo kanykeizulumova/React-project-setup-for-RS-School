@@ -5,7 +5,6 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 const nextConfig = {
-  distDir: './dist',
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
   images: {
     unoptimized: true,
