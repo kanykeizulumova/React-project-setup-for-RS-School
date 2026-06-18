@@ -1,0 +1,15 @@
+{
+  "NotFound": {
+    "title": "404",
+    "description": "Page Not Found"
+  },
+  "App": {
+    "switchTheme": "Switch Theme",
+    "refresh": "Refresh",
+    "unselectAll": "Unselect all",
+    "download": "Download",
+    "aboutUs": "About Us",
+    "loading": "Loading...",
+    "nothingFound": "Nothing found"
+  }
+}

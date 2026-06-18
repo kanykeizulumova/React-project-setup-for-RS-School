@@ -1,0 +1,15 @@
+{
+  "NotFound": {
+    "title": "404",
+    "description": "Страница не найдена"
+  },
+  "App": {
+    "switchTheme": "Сменить тему",
+    "refresh": "Обновить",
+    "unselectAll": "Снять выделение",
+    "download": "Скачать CSV",
+    "aboutUs": "О нас",
+    "loading": "Загрузка...",
+    "nothingFound": "Ничего не найдено"
+  }
+}
