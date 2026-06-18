@@ -1,12 +1,27 @@
-'use client';
-
-import { Suspense } from 'react';
+import {
+  QueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from '@tanstack/react-query';
+import fetchAllCharacters from './lib/fetchAllCharacters';
 import App from './App';
 
-export default function Page() {
+export default async function Page() {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['characters', '', 1],
+    queryFn: () =>
+      fetchAllCharacters({
+        queryKey: ['characters', '', 1],
+      }),
+  });
+
+  const dehydratedState = dehydrate(queryClient);
+
   return (
-    <Suspense fallback={<div>Loading layout...</div>}>
+    <HydrationBoundary state={dehydratedState}>
       <App />
-    </Suspense>
+    </HydrationBoundary>
   );
 }

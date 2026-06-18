@@ -99,12 +99,12 @@ export default function App() {
 
   const handleSearchSubmit = () => {
     setSearchParams((prev) => {
-      if (query) {
-        prev.set('query', query);
+      if (searchQuery.trim()) {
+        prev.set('query', searchQuery.trim());
       } else {
         prev.delete('query');
       }
-      prev.set('page', query);
+      prev.set('page', '1');
       return prev;
     });
   };
@@ -112,12 +112,8 @@ export default function App() {
   const handleReset = () => {
     setSearchQuery('');
     setSearchParams((prev) => {
-      if (query) {
-        prev.set('query', query);
-      } else {
-        prev.delete('query');
-      }
-      prev.set('page', String(1));
+      prev.delete('query');
+      prev.set('page', '1');
       return prev;
     });
   };
