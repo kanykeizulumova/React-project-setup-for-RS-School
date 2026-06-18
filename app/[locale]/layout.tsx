@@ -1,15 +1,9 @@
-import type { Metadata } from 'next';
 import '../ui/App.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { locales, Locale } from '../lib/navigation';
 import Providers from './providers';
-
-export const metadata: Metadata = {
-  title: 'My React App',
-  description: 'My App is a RS School project',
-};
 
 export default async function LocaleLayout({
   children,

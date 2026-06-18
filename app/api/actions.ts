@@ -1,5 +1,4 @@
-'use server';
-
+'use server'
 import transformToCSVString from '../lib/downloadCSV';
 import FetchError from '../lib/FetchError';
 

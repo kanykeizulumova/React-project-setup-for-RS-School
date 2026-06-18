@@ -50,10 +50,7 @@ export default [
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
+      'react-refresh/only-export-components': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/jsx-uses-react': 'off',
       'import/no-extraneous-dependencies': 'off', // Смягчаем для конфигов

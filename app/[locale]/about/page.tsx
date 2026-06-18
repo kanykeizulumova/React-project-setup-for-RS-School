@@ -1,6 +1,20 @@
-import { Link } from '../../lib/navigation';
+import { setRequestLocale } from 'next-intl/server';
+import { Link, locales } from '../../lib/navigation';
 
-export default function Page() {
+export function generateStaticParams() {
+  return locales.map((loc) => ({
+    locale: loc,
+  }));
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <div className="about-page">
       <p>This app was made by Kanykei Zulumova</p>

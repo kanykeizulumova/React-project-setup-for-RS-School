@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import {
   QueryClient,
   dehydrate,
@@ -36,7 +37,9 @@ export default async function Page({
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <App />
+      <Suspense fallback={<div>Loading...</div>}>
+        <App />
+      </Suspense>
     </HydrationBoundary>
   );
 }
