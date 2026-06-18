@@ -1,4 +1,5 @@
 import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import '../ui/App.css';
 import useCheckboxStore from './useCheckbox';
 
@@ -58,7 +59,7 @@ const Card = ({
         }}
         style={{ cursor: 'pointer' }}
       >
-        <img src={imageUrl} alt={name} />
+        <Image src={imageUrl} alt={name} width={300} height={300} priority />
         <h3>{name}</h3>
         <p className="species">Species: {species}</p>
         <p>

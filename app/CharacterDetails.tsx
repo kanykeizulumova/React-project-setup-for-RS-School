@@ -1,14 +1,16 @@
-import { useNavigate, useSearchParams } from 'react-router';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import fetchCharacter from './lib/fetchCharacterDetails';
 import CACHE_TTL from '../config';
 
 export default function CharacterDetails() {
-  const [searchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const id = searchParams.get('details');
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
@@ -20,7 +22,7 @@ export default function CharacterDetails() {
   });
 
   const closeCharacter = () => {
-    navigate(`/?page=${page}&query=${query}`);
+    router.push(`/?page=${page}&query=${query}`);
   };
 
   if (isLoading) return <div className="loader">Loading...</div>;
@@ -31,7 +33,13 @@ export default function CharacterDetails() {
   return (
     <div className="details">
       <h2>{data.name}</h2>
-      <img src={data.image} alt={data.name} />
+      <Image
+        src={data.image}
+        alt={data.name}
+        width={300}
+        height={300}
+        priority
+      />
       <h2>Species:</h2>
       <p>{data.species}</p>
       <h2>Gender:</h2>
