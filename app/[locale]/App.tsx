@@ -1,20 +1,28 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
-import './ui/App.css';
+import {
+  useSearchParams,
+  useRouter,
+  usePathname,
+  notFound,
+} from 'next/navigation';
+
+import { useTranslations } from 'next-intl';
+import '../ui/App.css';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import CardList from './lib/Cardlist';
-import SearchBar from './lib/Searchbar';
-import useLocalStorage from './lib/useLocalStorage';
-import useCheckboxStore from './lib/useCheckbox';
-import { useTheme } from './lib/ThemeContext';
-import fetchCharacters from './lib/fetchAllCharacters';
-import CACHE_TTL from '../config';
-import FetchError from './lib/FetchError';
-import CharacterDetails from './CharacterDetails';
-import getCsvAction from './api/actions';
+import { Link } from '../lib/navigation';
+import CardList from '../lib/Cardlist';
+import SearchBar from '../lib/Searchbar';
+import useLocalStorage from '../lib/useLocalStorage';
+import useCheckboxStore from '../lib/useCheckbox';
+import { useTheme } from '../lib/ThemeContext';
+import fetchCharacters from '../lib/fetchAllCharacters';
+import CACHE_TTL from '../../config';
+import FetchError from '../lib/FetchError';
+import CharacterDetails from '../CharacterDetails';
+import getCsvAction from '../api/actions';
+import LocaleSwitcher from '../lib/LocaleSwitcher';
 
 export default function App() {
   const queryClient = useQueryClient();
@@ -40,11 +48,19 @@ export default function App() {
 
   const { theme, toggleTheme } = useTheme();
 
+  const t = useTranslations('App');
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['characters', query, Number(page)],
     queryFn: fetchCharacters,
     staleTime: CACHE_TTL,
     gcTime: CACHE_TTL * 2,
+    retry: (failureCount, queryError) => {
+      if (queryError instanceof FetchError && queryError.status === 404) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   useEffect(() => {
@@ -124,11 +140,7 @@ export default function App() {
     if (error && typeof error === 'object' && 'status' in error) {
       const fetchError = error as FetchError;
       if (fetchError.status === 404) {
-        mainContent = (
-          <div className="error-msg">
-            Nothing found (Error 404). Try changing your search query.
-          </div>
-        );
+        notFound();
       } else if (fetchError.status === 429) {
         mainContent = (
           <div className="error-msg">
@@ -157,9 +169,9 @@ export default function App() {
       );
     }
   } else if (isLoading) {
-    mainContent = <div className="loader">Loading...</div>;
+    mainContent = <div className="loader">{t('loading')}</div>;
   } else if (data?.results?.length === 0) {
-    mainContent = <p>Nothing found</p>;
+    mainContent = <p>{t('nothingFound')}</p>;
   } else {
     const mappedItems = data.results.map(
       (c: {
@@ -203,8 +215,9 @@ export default function App() {
           />
           <div className="theme-context">
             <button type="button" className="switch-btn" onClick={toggleTheme}>
-              Switch Theme
+              {t('switchTheme')}
             </button>
+            <LocaleSwitcher />
           </div>
         </header>
 
@@ -217,7 +230,7 @@ export default function App() {
                 queryClient.invalidateQueries({ queryKey: ['characters'] });
               }}
             >
-              Refresh
+              {t('refresh')}
             </button>
           </div>
           <div className={id ? 'column-left' : 'card-lists'}>{mainContent}</div>
@@ -241,7 +254,7 @@ export default function App() {
               className="unsellect"
               onClick={() => unselectAll()}
             >
-              Unselect all
+              {t('unselectAll')}
             </button>
             <button
               type="button"
@@ -265,7 +278,7 @@ export default function App() {
                 }
               }}
             >
-              Download
+              {t('download')}
             </button>
           </div>
         </main>
@@ -279,7 +292,7 @@ export default function App() {
         </button>
         <footer>
           <button type="button" className="about-us">
-            <Link href="/about">About Us</Link>
+            <Link href="/about">{t('aboutUs')}</Link>
           </button>
         </footer>
       </div>
