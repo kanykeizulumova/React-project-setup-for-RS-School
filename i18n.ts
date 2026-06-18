@@ -1,10 +1,13 @@
 import { getRequestConfig } from 'next-intl/server';
-import { locales } from './app/lib/navigation';
+import { locales, Locale } from './app/lib/navigation';
 
 export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
 
-  if (!locale || !locales.includes(locale as any)) {
+  const isValidLocale = (value: string | undefined): value is Locale =>
+    !!value && locales.includes(value as Locale);
+
+  if (!isValidLocale(locale)) {
     locale = 'en';
   }
 

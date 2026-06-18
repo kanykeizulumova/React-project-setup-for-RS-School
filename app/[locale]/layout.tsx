@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import '../ui/App.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
-import { locales } from '../lib/navigation';
+import { getMessages, setRequestLocale } from 'next-intl/server';
+import { locales, Locale } from '../lib/navigation';
 import Providers from './providers';
 
 export const metadata: Metadata = {
@@ -19,16 +19,23 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const isValidLocale = locales.includes(locale as Locale);
 
-  setRequestLocale(locale);
-
-  if (!locales.includes(locale as any)) {
+  if (!isValidLocale) {
     notFound();
   }
 
+  setRequestLocale(locale);
+
+  const messages = await getMessages();
+
   return (
-    <NextIntlClientProvider locale={locale}>
-      <Providers>{children}</Providers>
-    </NextIntlClientProvider>
+    <html lang={locale}>
+      <body>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
