@@ -17,9 +17,8 @@ const escapeCSV = (val: string): string => {
   return `"${escaped}"`;
 };
 
-const downloadCSV = (data: Character[], fileName: string): void => {
-  if (!data || data.length === 0) return;
-
+const transformToCSVString = (data: Character[], origin: string): string => {
+  if (!data || data.length === 0) return '';
   const headers = [
     'Name',
     'Description',
@@ -33,7 +32,7 @@ const downloadCSV = (data: Character[], fileName: string): void => {
 
   const rows = data.map((char) => {
     const description = `A ${char.status.toLowerCase()} ${char.gender.toLowerCase()} ${char.species.toLowerCase()} from ${char.origin.name}`;
-    const detailsURL = `${window.location.origin}/?details=${char.id}`;
+    const detailsURL = `${origin}/?details=${char.id}`;
 
     return [
       escapeCSV(char.name),
@@ -46,21 +45,8 @@ const downloadCSV = (data: Character[], fileName: string): void => {
       escapeCSV(char.location.name),
     ].join(',');
   });
-
   const csvContent = [headers.join(','), ...rows].join('\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement('a');
-  link.href = url;
-  link.setAttribute('download', fileName);
-  link.style.visibility = 'hidden';
-
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  URL.revokeObjectURL(url);
+  return csvContent;
 };
 
-export default downloadCSV;
+export default transformToCSVString;
